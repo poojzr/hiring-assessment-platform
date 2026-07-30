@@ -51,7 +51,7 @@ class FaceDetector:
         try:
             self.mp_face_detection = mp.solutions.face_detection
             self.face_detection = self.mp_face_detection.FaceDetection(
-                model_selection=1,
+                model_selection=0,
                 min_detection_confidence=0.5
             )
             self._initialized = True
@@ -230,48 +230,86 @@ class VoiceDetector:
 
 class LipSyncDetector:
     def __init__(self):
-        self.face_detector = FaceDetector()
-    
+        self._face_mesh = None
+        self._lock = threading.Lock()
+        self.upper_lip_idx = 13
+        self.lower_lip_idx = 14
+        self.mouth_open_threshold = 0.015
+        self._init_face_mesh()
+
+    def _init_face_mesh(self):
+        if not HAS_MEDIAPIPE:
+            return
+        try:
+            self._face_mesh = mp.solutions.face_mesh.FaceMesh(
+                static_image_mode=False,
+                max_num_faces=1,
+                refine_landmarks=True,
+                min_detection_confidence=0.5,
+                min_tracking_confidence=0.5,
+            )
+            print("[LipSyncDetector] FaceMesh initialized successfully")
+        except Exception as e:
+            print(f"[LipSyncDetector] FaceMesh initialization failed: {e}")
+            self._face_mesh = None
+
+    def _get_mouth_distance(self, frame_data: bytes) -> Optional[float]:
+        try:
+            nparr = np.frombuffer(frame_data, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            if img is None or self._face_mesh is None:
+                return None
+
+            rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            with self._lock:
+                result = self._face_mesh.process(rgb)
+
+            if not result.multi_face_landmarks:
+                return None
+
+            landmarks = result.multi_face_landmarks[0].landmark
+            upper = landmarks[self.upper_lip_idx]
+            lower = landmarks[self.lower_lip_idx]
+            return math.sqrt((upper.x - lower.x) ** 2 + (upper.y - lower.y) ** 2)
+        except Exception as e:
+            print(f"[LipSyncDetector] FaceMesh error: {e}")
+            return None
+
     def detect_mismatch(self, video_frames: List[bytes], audio_data: bytes) -> Dict[str, Any]:
         try:
+            if self._face_mesh is None:
+                return {"matched": True, "confidence": 1.0}
+
             if not video_frames or len(video_frames) < 5:
                 return {"matched": True, "confidence": 1.0}
-            
+
             if not audio_data or len(audio_data) < 100:
                 return {"matched": True, "confidence": 1.0}
-            
-            mouth_movements = []
-            for frame in video_frames[:10]:
-                face_result = self.face_detector.detect(frame)
-                if face_result.get("has_face") and face_result.get("faces"):
-                    face = face_result["faces"][0]
-                    landmarks = face.get("landmarks", [])
-                    if landmarks and len(landmarks) >= 8:
-                        lip_landmarks = landmarks[4:8] if len(landmarks) >= 8 else landmarks
-                        mouth_movement = sum(
-                            ((l["x"] - landmarks[0]["x"]) ** 2 + (l["y"] - landmarks[0]["y"]) ** 2)
-                            for l in lip_landmarks
-                        )
-                        mouth_movements.append(mouth_movement)
-            
-            if len(mouth_movements) < 3:
+
+            mouth_distances = []
+            for frame in video_frames[-10:]:
+                distance = self._get_mouth_distance(frame)
+                if distance is not None:
+                    mouth_distances.append(distance)
+
+            if len(mouth_distances) < 3:
                 return {"matched": True, "confidence": 0.9}
-            
+
+            mouth_open_ratio = sum(1 for d in mouth_distances if d > self.mouth_open_threshold) / len(mouth_distances)
+
             audio_array = np.frombuffer(audio_data, dtype=np.float32)
-            audio_energy = float(np.std(audio_array)) if len(audio_array) > 0 else 0.0
-            
-            mouth_variance = np.var(mouth_movements)
-            audio_normalized = min(1.0, audio_energy / 0.3)
-            
-            if mouth_variance > 50 and audio_normalized < 0.1:
-                print(f"[LipSync] Mismatch detected: mouth variance {mouth_variance:.2f}, audio {audio_normalized:.2f}")
+            rms = float(np.sqrt(np.mean(audio_array.astype(np.float64) ** 2))) if len(audio_array) > 0 else 0.0
+            has_voice = rms > 0.03
+
+            if mouth_open_ratio > 0.6 and not has_voice:
+                print(f"[LipSync] Mismatch detected: mouth open ratio {mouth_open_ratio:.2f}, voice level {rms:.4f}")
                 return {"matched": False, "confidence": 0.7}
-            if mouth_variance < 5 and audio_normalized > 0.5:
-                print(f"[LipSync] Mismatch detected: mouth variance {mouth_variance:.2f}, audio {audio_normalized:.2f}")
+            if mouth_open_ratio < 0.15 and has_voice:
+                print(f"[LipSync] Mismatch detected: mouth open ratio {mouth_open_ratio:.2f}, voice level {rms:.4f}")
                 return {"matched": False, "confidence": 0.6}
-            
+
             return {"matched": True, "confidence": 0.9}
-            
+
         except Exception as e:
             print(f"[LipSync] Error: {e}")
             return {"matched": True, "confidence": 0.5, "error": str(e)}
