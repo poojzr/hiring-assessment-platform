@@ -1,11 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
-
 from .config import settings
 from .database import ensure_schema
-from .middleware.security import setup_security_middleware
-
 from .routers import (
     auth_router,
     admin_router,
@@ -47,8 +44,6 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
-
-setup_security_middleware(app)
 
 app.include_router(auth_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")

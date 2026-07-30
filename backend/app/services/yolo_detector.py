@@ -13,10 +13,10 @@ except ImportError:
 
 MODEL_PATH = "yolov8n.pt"
 
-PHONE_CONFIDENCE_THRESHOLD = 0.35
+PHONE_CONFIDENCE_THRESHOLD = 0.50
 
-MIN_BOX_AREA_FRACTION = 0.003
-MAX_BOX_AREA_FRACTION = 0.75
+MIN_BOX_AREA_FRACTION = 0.0015
+MAX_BOX_AREA_FRACTION = 0.6
 
 class YOLOMobileDetector:
     def __init__(self, model_path: str = MODEL_PATH):
@@ -62,10 +62,10 @@ class YOLOMobileDetector:
                 if result.boxes is not None:
                     for box in result.boxes:
                         class_id = int(box.cls[0])
-                        if class_id != 67:
-                            continue
-
                         confidence = float(box.conf[0])
+
+                        if class_id != 67 or confidence < PHONE_CONFIDENCE_THRESHOLD:
+                            continue
 
                         x1, y1, x2, y2 = (
                             float(box.xyxy[0][0]), float(box.xyxy[0][1]),
@@ -73,11 +73,6 @@ class YOLOMobileDetector:
                         )
                         box_area = (x2 - x1) * (y2 - y1)
                         area_fraction = box_area / frame_area if frame_area else 0
-
-                        print(f"[YOLOMobileDetector] phone candidate confidence={confidence:.3f} area_fraction={area_fraction:.3f}")
-
-                        if confidence <= PHONE_CONFIDENCE_THRESHOLD:
-                            continue
 
                         if not (MIN_BOX_AREA_FRACTION <= area_fraction <= MAX_BOX_AREA_FRACTION):
                             continue

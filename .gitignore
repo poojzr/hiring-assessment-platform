@@ -1,86 +1,29 @@
-# Environment variables (CRITICAL!)
-.env
-.env.local
-.env.production
-!.env.example
+FROM python:3.10-slim
 
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-hiring_platform.db
-*.db-journal
+WORKDIR /app
 
-# Uploads directory
-uploads/
-storage/
-media/
-*.webm
-*.mp4
-*.jpg
-*.jpeg
-*.png
-*.wav
-*.mp3
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-venv/
-env/
-ENV/
-.venv
-pip-log.txt
-pip-delete-this-directory.txt
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-*.egg-info/
-dist/
-build/
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    default-jdk \
+    nodejs \
+    npm \
+    ffmpeg \
+    libgl1 \
+    libglib2.0-0 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-*.iml
 
-# Logs
-logs/
-*.log
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Alembic
-alembic/versions/*.pyc
 
-# Docker
-*.pid
-docker-compose.override.yml
+COPY backend/app ./app
 
-# Railway
-railway.json.local
+RUN mkdir -p uploads
 
-# Render (if you ever use it)
-render.yaml.backup
-render.yaml.bak
+EXPOSE 8000
 
-# OS generated
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Secret files
-*.pem
-*.key
-*.crt
-
-# Frontend (ignore these if they accidentally appear in root)
-node_modules/
-dist/
-build/
+CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
