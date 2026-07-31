@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "start": "serve -s dist -l $PORT",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
@@ -22,6 +23,7 @@
     "react-hook-form": "^7.47.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.20.0",
+    "serve": "^14.2.6",
     "tailwind-merge": "^2.6.1"
   },
   "devDependencies": {
