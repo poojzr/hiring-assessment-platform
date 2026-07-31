@@ -21,11 +21,11 @@ export const processFrame = async (data) => {
 }
 
 export const connectProctorWebSocket = (sessionId, token) => {
-  const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000'
+  const wsUrl = import.meta.env.VITE_WS_URL
   return new WebSocket(`${wsUrl}/api/proctor/live/${sessionId}?token=${token}`)
 }
 
 export const connectManagerWebSocket = (token) => {
-  const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000'
+  const wsUrl = import.meta.env.VITE_WS_URL
   return new WebSocket(`${wsUrl}/api/proctor/manager/live?token=${token}`)
 }

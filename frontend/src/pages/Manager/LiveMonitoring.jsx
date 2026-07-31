@@ -29,10 +29,9 @@ export default function LiveMonitoring() {
   const terminateToastRef = useRef(null)
 
   const token = localStorage.getItem('access_token')
-  const wsBase = import.meta.env.VITE_WS_URL ||
-    `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host}`
+  const wsBase = import.meta.env.VITE_WS_URL 
   const wsUrl = `${wsBase}/api/proctor/manager/live?token=${token}`
-
+    
   const { isConnected, send, lastMessage, reconnect, error, close } = useWebSocket(wsUrl, {
     onOpen: () => {
       console.log('Manager WebSocket connected')

@@ -49,6 +49,6 @@ export const getRecordingStream = (recordingId) => {
     throw new Error('Recording ID is required')
   }
   const token = localStorage.getItem('access_token')
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
   return `${API_BASE_URL}/api/recordings/${recordingId}/stream?token=${token}`
 }
