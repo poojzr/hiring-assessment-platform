@@ -109,6 +109,7 @@ class DeleteSessionResponse(BaseModel):
 
 class EligibleCandidateResponse(BaseModel):
     session_id: int
+    access_token: str
     candidate_id: int
     candidate_name: str
     candidate_email: str
@@ -575,6 +576,7 @@ def get_eligible_shortlist(
         if candidate:
             items.append(EligibleCandidateResponse(
                 session_id=session.id,
+                access_token=session.access_token,
                 candidate_id=candidate.id,
                 candidate_name=candidate.name,
                 candidate_email=candidate.email,
@@ -633,6 +635,7 @@ def get_candidate_report(
         "sessions": [
             {
                 "id": s.id,
+                "access_token": s.access_token,
                 "status": s.status,
                 "total_score": s.total_score,
                 "integrity_score": s.integrity_score,
