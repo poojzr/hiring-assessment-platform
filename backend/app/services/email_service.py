@@ -32,10 +32,9 @@ def _send_email_with_retry(to_email: str, subject: str, body: str, max_retries: 
             msg["Subject"] = subject
             msg.attach(MIMEText(body, "plain"))
             
-            with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
-                server.starttls()
-                server.login(smtp_user, smtp_pass)
-                server.sendmail(smtp_user, to_email, msg.as_string())
+            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10) as server:
+                  server.login(smtp_user, smtp_pass)
+                  server.sendmail(smtp_user, to_email, msg.as_string())
             
             print(f"[EMAIL] Sent to {to_email}")
             return True
