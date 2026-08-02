@@ -81,6 +81,12 @@ def ensure_schema():
     from .seed import seed_database
     db = SessionLocal()
     try:
+        result = db.execute(text("SELECT COUNT(*) FROM candidates"))
+        count = result.scalar()
+        print(f"[STARTUP CHECK] Candidates table has {count} rows at startup")
+    except Exception as e:
+        print(f"[STARTUP CHECK] Error counting candidates: {e}")
+    try:
         seed_database(db)
     finally:
         db.close()
