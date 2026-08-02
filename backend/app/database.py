@@ -15,6 +15,8 @@ def _normalize_database_url(url: str) -> str:
 
 def get_engine():
     database_url = _normalize_database_url(settings.DATABASE_URL)
+    print(f"[DATABASE] Connecting to: {database_url[:30]}...")
+
 
     connect_args = {}
     if database_url.startswith("sqlite"):
