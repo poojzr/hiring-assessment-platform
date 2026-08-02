@@ -1,8 +1,6 @@
 import os
-import smtplib
 import time
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import requests
 from datetime import datetime, timedelta
 from ..config import settings
 
@@ -10,40 +8,44 @@ def now():
     return datetime.utcnow() + timedelta(hours=5, minutes=30)
 
 def _send_email_with_retry(to_email: str, subject: str, body: str, max_retries: int = 3) -> bool:
-    smtp_host = os.environ.get("SMTP_HOST", getattr(settings, 'SMTP_HOST', ''))
-    smtp_user = os.environ.get("SMTP_USER", getattr(settings, 'SMTP_USER', ''))
-    smtp_pass = os.environ.get("SMTP_PASS", getattr(settings, 'SMTP_PASS', ''))
-    smtp_port = int(os.environ.get("SMTP_PORT", getattr(settings, 'SMTP_PORT', '587')))
-    
-    if not (smtp_host and smtp_user and smtp_pass):
+    api_key = os.environ.get("BREVO_API_KEY", getattr(settings, 'BREVO_API_KEY', ''))
+    from_email = os.environ.get("FROM_EMAIL", getattr(settings, 'FROM_EMAIL', 'poojithayekula44@gmail.com'))
+
+    if not api_key:
         print("=" * 60)
-        print("[EMAIL CONSOLE FALLBACK]")
+        print("[EMAIL CONSOLE FALLBACK] - No BREVO_API_KEY set")
         print(f"To: {to_email}")
         print(f"Subject: {subject}")
         print(body)
         print("=" * 60)
         return True
-    
+
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": api_key,
+        "content-type": "application/json",
+    }
+    payload = {
+        "sender": {"email": from_email, "name": "Hiring Team"},
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "textContent": body,
+    }
+
     for attempt in range(max_retries):
         try:
-            msg = MIMEMultipart()
-            msg["From"] = smtp_user
-            msg["To"] = to_email
-            msg["Subject"] = subject
-            msg.attach(MIMEText(body, "plain"))
-            
-            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10) as server:
-                  server.login(smtp_user, smtp_pass)
-                  server.sendmail(smtp_user, to_email, msg.as_string())
-            
-            print(f"[EMAIL] Sent to {to_email}")
-            return True
-            
+            response = requests.post(url, json=payload, headers=headers, timeout=10)
+            if response.status_code in (200, 201):
+                print(f"[EMAIL] Sent to {to_email}")
+                return True
+            else:
+                print(f"[EMAIL ERROR] Attempt {attempt + 1}/{max_retries} failed: {response.status_code} {response.text}")
         except Exception as e:
             print(f"[EMAIL ERROR] Attempt {attempt + 1}/{max_retries} failed: {e}")
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)
-    
+        if attempt < max_retries - 1:
+            time.sleep(2 ** attempt)
+
     print("=" * 60)
     print("[EMAIL CONSOLE FALLBACK] (All retries failed)")
     print(f"To: {to_email}")
@@ -55,11 +57,11 @@ def _send_email_with_retry(to_email: str, subject: str, body: str, max_retries: 
 def send_assessment_email(to_email: str, candidate_name: str, access_token: str, deadline_str: str, job_role: str) -> bool:
     frontend_url = os.environ.get("FRONTEND_URL", getattr(settings, 'FRONTEND_URL', 'http://localhost:5173'))
     link = f"{frontend_url}/assessment/{access_token}"
-    
+
     if not deadline_str:
         deadline_dt = now() + timedelta(days=3)
         deadline_str = deadline_dt.strftime("%Y-%m-%d %H:%M IST")
-    
+
     subject = f"Assessment Invitation - {job_role}"
     body = f"""
 Dear {candidate_name},
@@ -94,10 +96,10 @@ def send_rejection_email(
     integrity: float = None
 ) -> bool:
     subject = f"Update on Your Application for {job_role}"
-    
+
     score_line = f"\nYour assessment score: {score}%" if score is not None else ""
     integrity_line = f"\nIntegrity score: {integrity}%" if integrity is not None else ""
-    
+
     body = f"""
 Dear {candidate_name},
 
@@ -121,10 +123,10 @@ def send_shortlist_email(
     integrity: float = None
 ) -> bool:
     subject = f"Congratulations! You've Been Shortlisted for {job_role}"
-    
+
     score_line = f"Assessment score: {score}%"
     integrity_line = f"\nIntegrity score: {integrity}%" if integrity is not None else ""
-    
+
     body = f"""
 Dear {candidate_name},
 
@@ -163,7 +165,7 @@ Hiring Team
 def send_password_reset_email(to_email: str, reset_token: str) -> bool:
     frontend_url = os.environ.get("FRONTEND_URL", getattr(settings, 'FRONTEND_URL', 'http://localhost:5173'))
     reset_link = f"{frontend_url}/reset-password?token={reset_token}"
-    
+
     subject = "Password Reset Request - Hiring Platform"
     body = f"""
 Dear User,
