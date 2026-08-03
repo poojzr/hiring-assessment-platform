@@ -36,7 +36,7 @@ export default function UsersList() {
   ]
 
   useEffect(() => {
-    const userId = localStorage.getItem('user_id')
+    const userId = sessionStorage.getItem('user_id')
     if (userId) {
       setCurrentUserId(parseInt(userId))
     }

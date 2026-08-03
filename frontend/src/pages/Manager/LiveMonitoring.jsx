@@ -28,7 +28,7 @@ export default function LiveMonitoring() {
   const warningToastRef = useRef(null)
   const terminateToastRef = useRef(null)
 
-  const token = localStorage.getItem('access_token')
+  const token = sessionStorage.getItem('access_token')
   const wsBase = import.meta.env.VITE_WS_URL 
   const wsUrl = `${wsBase}/api/proctor/manager/live?token=${token}`
     

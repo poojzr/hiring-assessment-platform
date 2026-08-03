@@ -9,19 +9,19 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('access_token')
+    const storedToken = sessionStorage.getItem('access_token')
     if (storedToken) {
       setToken(storedToken)
       apiClient
         .get('/auth/me')
         .then((response) => {
           setUser(response.data)
-          localStorage.setItem('user_id', String(response.data.id))
+          sessionStorage.setItem('user_id', String(response.data.id))
         })
         .catch(() => {
-          localStorage.removeItem('access_token')
-          localStorage.removeItem('refresh_token')
-          localStorage.removeItem('user_id')
+          sessionStorage.removeItem('access_token')
+          sessionStorage.removeItem('refresh_token')
+          sessionStorage.removeItem('user_id')
           setToken(null)
         })
         .finally(() => setIsLoading(false))
@@ -33,18 +33,18 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const response = await apiClient.post('/auth/login', { email, password })
     const { access_token, refresh_token } = response.data
-    localStorage.setItem('access_token', access_token)
-    localStorage.setItem('refresh_token', refresh_token)
+    sessionStorage.setItem('access_token', access_token)
+    sessionStorage.setItem('refresh_token', refresh_token)
     setToken(access_token)
 
     const userResponse = await apiClient.get('/auth/me')
     setUser(userResponse.data)
-    localStorage.setItem('user_id', String(userResponse.data.id))
+    sessionStorage.setItem('user_id', String(userResponse.data.id))
     return userResponse.data
   }
 
   const logout = async () => {
-    const refreshToken = localStorage.getItem('refresh_token')
+    const refreshToken = sessionStorage.getItem('refresh_token')
     if (refreshToken) {
       try {
         await apiClient.post('/auth/logout', { refresh_token: refreshToken })
@@ -52,9 +52,9 @@ export function AuthProvider({ children }) {
         // ignore
       }
     }
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    localStorage.removeItem('user_id')
+    sessionStorage.removeItem('access_token')
+    sessionStorage.removeItem('refresh_token')
+    sessionStorage.removeItem('user_id')
     setToken(null)
     setUser(null)
   }
