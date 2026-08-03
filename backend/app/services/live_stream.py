@@ -748,15 +748,21 @@ class LiveStreamManager:
         if mobile_result and mobile_result.get("detected", False):
             if state["mobile_start"] is None:
                 state["mobile_start"] = now_time
-            elif now_time - state["mobile_start"] >= 2:
+            state["mobile_last_seen"] = now_time
+
+            if now_time - state["mobile_start"] >= 2:
                 violations.append({
                     "type": "MOBILE_DETECTED",
                     "severity": "critical",
                     "data": {"confidence": mobile_result.get("confidence", 0.0)}
                 })
                 state["mobile_start"] = None
+                state["mobile_last_seen"] = None
         else:
-            state["mobile_start"] = None
+            last_seen = state.get("mobile_last_seen")
+            if last_seen is None or (now_time - last_seen) > 1.0:
+                state["mobile_start"] = None
+                state["mobile_last_seen"] = None
 
         return violations
 
