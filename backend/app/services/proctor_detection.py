@@ -7,8 +7,7 @@ from datetime import datetime, timedelta
 import math
 import struct
 import os
-
-from .yolo_detector import YOLOMobileDetector, detect_mobile_yolo
+from .yolo_detector import YOLOMobileDetector, detect_mobile_yolo, yolo_detector as _shared_yolo_detector
 
 def now():
     return datetime.utcnow() + timedelta(hours=5, minutes=30)
@@ -145,7 +144,7 @@ class FaceDetector:
 
 class MobileDetector:
     def __init__(self):
-        self.yolo_detector = YOLOMobileDetector()
+        self.yolo_detector = _shared_yolo_detector
         self._initialized = True
         print("[MobileDetector] Initialized with YOLO")
 
