@@ -296,7 +296,7 @@ export default function AssessmentTake() {
             toast.error('Session terminated by proctor: ' + data.reason)
             stopProctoring()
             stopRecording()
-            handleSubmitAssessment(true)
+            navigate(`/assessment/${accessToken}/thankyou`)
           }
 
           if (data.type === 'chat') {
