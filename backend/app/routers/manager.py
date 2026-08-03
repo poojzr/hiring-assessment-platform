@@ -505,6 +505,9 @@ def delete_session(
     if session.status == "in_progress":
         raise HTTPException(status_code=400, detail="Cannot delete an in-progress session")
 
+    from app.models.proctoring import ChatMessage
+    db.query(ChatMessage).filter(ChatMessage.session_id == session_id).delete()
+
     db.delete(session)
     db.commit()
 
