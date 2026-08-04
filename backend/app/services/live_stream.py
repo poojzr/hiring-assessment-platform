@@ -750,7 +750,7 @@ class LiveStreamManager:
                 state["mobile_start"] = now_time
             state["mobile_last_seen"] = now_time
 
-            if now_time - state["mobile_start"] >= 0.5:
+            if now_time - state["mobile_start"] >= 0.2:
                 violations.append({
                     "type": "MOBILE_DETECTED",
                     "severity": "critical",

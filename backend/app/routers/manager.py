@@ -679,6 +679,75 @@ def get_candidate_report(
 
     return result
 
+@router.get("/sessions/{session_id}/report")
+def get_session_report(
+    session_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_manager)
+):
+    session = db.query(AssessmentSession).filter(AssessmentSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    candidate = session.candidate
+
+    violations = db.query(ProctorEvent).filter(
+        ProctorEvent.session_id == session.id
+    ).all()
+
+    answers = db.query(Answer).join(AssessmentSession).filter(
+        AssessmentSession.id == session.id
+    ).all()
+
+    return {
+        "candidate": {
+            "id": candidate.id,
+            "name": candidate.name,
+            "email": candidate.email,
+            "phone": candidate.phone,
+            "ats_score": candidate.ats_score,
+            "shortlisted": candidate.shortlisted,
+            "job_role": candidate.job_role_threshold.job_role_name if candidate.job_role_threshold else None,
+        },
+        "session": {
+            "id": session.id,
+            "access_token": session.access_token,
+            "status": session.status,
+            "total_score": session.total_score,
+            "integrity_score": session.integrity_score,
+            "cheating_risk": session.cheating_risk,
+            "eligibility": session.eligibility,
+            "started_at": session.started_at.isoformat() if session.started_at else None,
+            "finished_at": session.finished_at.isoformat() if session.finished_at else None,
+        },
+        "answers": [
+            {
+                "question_id": a.question_id,
+                "answer_data": a.answer_data,
+                "is_correct": a.is_correct,
+                "auto_score": a.auto_score,
+            }
+            for a in answers
+        ],
+        "violations": [
+            {
+                "type": v.event_type.value if hasattr(v.event_type, 'value') else str(v.event_type),
+                "severity": v.severity.value if hasattr(v.severity, 'value') else str(v.severity),
+                "timestamp": v.timestamp.isoformat() if v.timestamp else None,
+                "snapshot_url": v.snapshot_url,
+                "clip_url": v.clip_url,
+            }
+            for v in violations
+        ],
+        "violation_summary": {
+            "total": len(violations),
+            "critical": sum(1 for v in violations if hasattr(v.severity, 'value') and v.severity.value == "critical"),
+            "high": sum(1 for v in violations if hasattr(v.severity, 'value') and v.severity.value == "high"),
+            "medium": sum(1 for v in violations if hasattr(v.severity, 'value') and v.severity.value == "medium"),
+            "low": sum(1 for v in violations if hasattr(v.severity, 'value') and v.severity.value == "low"),
+        }
+    }
+
 @router.get("/candidates/{candidate_id}/export")
 def export_candidate(
     candidate_id: int,
