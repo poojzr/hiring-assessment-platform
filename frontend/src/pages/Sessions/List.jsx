@@ -136,12 +136,12 @@ export default function SessionsList() {
     navigate('/manager/recordings/' + sessionId)
   }
 
-  const handleViewReport = (candidateId) => {
-    if (!candidateId) {
-      toast.error('No candidate record available for this session')
+  const handleViewReport = (sessionId) => {
+    if (!sessionId) {
+      toast.error('No session record available')
       return
     }
-    navigate('/manager/report/' + candidateId)
+    navigate('/manager/session-report/' + sessionId)
   }
 
   const exportSessions = async (format) => {
@@ -354,7 +354,7 @@ export default function SessionsList() {
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <button
-                        onClick={() => handleViewReport(session.candidate_id)}
+                        onClick={() => handleViewReport(session.session_id || session.id)}
                         className="p-1 text-indigo-600 hover:text-indigo-800"
                         title="View Full Report"
                       >

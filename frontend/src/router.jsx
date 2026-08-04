@@ -34,6 +34,7 @@ import ManagerDashboard from './pages/Manager/Dashboard'
 import LiveMonitoring from './pages/Manager/LiveMonitoring'
 import CandidateReport from './pages/Manager/CandidateReport'
 import EligibleShortlist from './pages/Manager/EligibleShortlist'
+import SessionReport from './pages/Manager/SessionReport'
 import Analytics from './pages/Manager/Analytics'
 import Recordings from './pages/Manager/Recordings'
 
@@ -196,6 +197,10 @@ const router = createBrowserRouter([
           {
             path: '/manager/eligible-shortlist',
             element: <EligibleShortlist />,
+          },
+          {
+            path: '/manager/session-report/:sessionId',
+            element: <SessionReport />,
           },
           {
             path: '/manager/analytics',
