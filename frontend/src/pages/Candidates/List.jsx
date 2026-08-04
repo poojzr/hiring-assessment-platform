@@ -292,7 +292,7 @@ export default function CandidatesList() {
                         >
                           <FileText className="w-4 h-4" />
                         </button>
-                        {candidate.shortlisted && (
+                        {candidate.shortlisted && candidate.access_token && (
                           <>
                             <button
                               onClick={() => handleCopyToken(candidate.access_token)}
