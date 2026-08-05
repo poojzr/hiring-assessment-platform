@@ -73,7 +73,6 @@ const router = createBrowserRouter([
     element: <AssessmentThankYou />,
   },
   {
-    path: '/dashboard',
     element: <ProtectedRoute />,
     children: [
       {
@@ -84,154 +83,139 @@ const router = createBrowserRouter([
             element: <Navigate to="/dashboard" replace />,
           },
           {
-            path: '',
+            path: '/dashboard',
             element: <Dashboard />,
           },
           {
-            path: 'users',
+            path: '/users',
             element: <UsersList />,
           },
           {
-            path: 'users/create',
+            path: '/users/create',
             element: <UserForm />,
           },
           {
-            path: 'users/:id/edit',
+            path: '/users/:id/edit',
             element: <UserForm />,
           },
           {
-            path: 'users/:id',
+            path: '/users/:id',
             element: <UserDetail />,
           },
           {
-            path: 'questions',
+            path: '/questions',
             element: <QuestionsList />,
           },
           {
-            path: 'questions/create',
+            path: '/questions/create',
             element: <QuestionForm />,
           },
           {
-            path: 'questions/:id/edit',
+            path: '/questions/:id/edit',
             element: <QuestionForm />,
           },
           {
-            path: 'questions/:id',
+            path: '/questions/:id',
             element: <QuestionDetail />,
           },
           {
-            path: 'questions/bulk-import',
+            path: '/questions/bulk-import',
             element: <BulkImport />,
           },
           {
-            path: 'templates',
+            path: '/templates',
             element: <TemplatesList />,
           },
           {
-            path: 'templates/create',
+            path: '/templates/create',
             element: <TemplateForm />,
           },
           {
-            path: 'templates/:id',
+            path: '/templates/:id',
             element: <TemplateDetail />,
           },
           {
-            path: 'templates/:id/edit',
+            path: '/templates/:id/edit',
             element: <TemplateForm />,
           },
           {
-            path: 'templates/:id/history',
+            path: '/templates/:id/history',
             element: <TemplateHistory />,
           },
           {
-            path: 'thresholds',
+            path: '/thresholds',
             element: <ThresholdsList />,
           },
           {
-            path: 'thresholds/create',
+            path: '/thresholds/create',
             element: <ThresholdForm />,
           },
           {
-            path: 'thresholds/:id/edit',
+            path: '/thresholds/:id/edit',
             element: <ThresholdForm />,
           },
           {
-            path: 'sessions',
+            path: '/sessions',
             element: <SessionsList />,
           },
           {
-            path: 'sessions/create',
+            path: '/sessions/create',
             element: <SessionCreate />,
           },
           {
-            path: 'sessions/bulk-create',
+            path: '/sessions/bulk-create',
             element: <BulkSessionCreate />,
           },
           {
-            path: 'sessions/view/:accessToken',
+            path: '/sessions/view/:accessToken',
             element: <SessionViewByToken />,
           },
           {
-            path: 'candidates',
+            path: '/candidates',
             element: <CandidatesList />,
           },
           {
-            path: 'candidates/create',
+            path: '/candidates/create',
             element: <CandidateCreate />,
           },
           {
-            path: 'candidates/:id/edit',
+            path: '/candidates/:id/edit',
             element: <CandidateEdit />,
           },
           {
-            path: 'candidates/:id',
+            path: '/candidates/:id',
             element: <CandidateDetail />,
           },
-        ],
-      },
-    ],
-  },
-  {
-    path: '/manager',
-    element: <ProtectedRoute />,
-    children: [
-      {
-        element: <AdminLayout />,
-        children: [
           {
-            index: true,
-            element: <Navigate to="/manager/dashboard" replace />,
-          },
-          {
-            path: 'dashboard',
+            path: '/manager/dashboard',
             element: <ManagerDashboard />,
           },
           {
-            path: 'live',
+            path: '/manager/live',
             element: <LiveMonitoring />,
           },
           {
-            path: 'report/:candidateId',
+            path: '/manager/report/:candidateId',
             element: <CandidateReport />,
           },
           {
-            path: 'eligible-shortlist',
+            path: '/manager/eligible-shortlist',
             element: <EligibleShortlist />,
           },
           {
-            path: 'session-report/:sessionId',
+            path: '/manager/session-report/:sessionId',
             element: <SessionReport />,
           },
           {
-            path: 'analytics',
+            path: '/manager/analytics',
             element: <Analytics />,
           },
           {
-            path: 'recordings',
+            path: '/manager/recordings',
             element: <Recordings />,
           },
           {
-            path: 'recordings/:sessionId',
+            path: '/manager/recordings/:sessionId',
             element: <Recordings />,
           },
         ],
