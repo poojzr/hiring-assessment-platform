@@ -31,14 +31,14 @@ export default function ForgotPassword() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 border border-gray-100 text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <h2 className="text-xl font-bold text-navy-800 mb-2">Check Your Email</h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-4 break-words">
               We've sent a password reset link to <strong>{email}</strong>
             </p>
             <Link to="/login" className="text-accent-500 hover:text-accent-600">
@@ -53,13 +53,13 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-navy-800">Reset Password</h1>
-          <p className="text-gray-500 mt-2">Enter your email to receive a reset link</p>
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Reset Password</h1>
+          <p className="text-gray-500 mt-2 text-sm sm:text-base">Enter your email to receive a reset link</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 border border-gray-100">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             <div>
               <label className="block text-sm font-medium text-navy-700 mb-1">Email</label>
               <input
@@ -81,14 +81,14 @@ export default function ForgotPassword() {
             {error && (
               <div className="flex items-start gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-md border border-red-200">
                 <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                <span>{error}</span>
+                <span className="break-words">{error}</span>
               </div>
             )}
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-accent-500 hover:bg-accent-600 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-accent-500 hover:bg-accent-600 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isLoading ? 'Sending...' : 'Send Reset Link'}
             </button>

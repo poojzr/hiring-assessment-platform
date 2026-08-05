@@ -36,12 +36,12 @@ export default function TemplateHistory() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full">
+    <div className="max-w-4xl mx-auto px-4 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6">
+        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-navy-800">Template History</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Template History</h1>
       </div>
 
       {history.length === 0 ? (
@@ -51,24 +51,24 @@ export default function TemplateHistory() {
       ) : (
         <div className="space-y-4">
           {history.map((entry) => (
-            <div key={entry.id} className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-              <div className="flex justify-between items-start mb-3">
+            <div key={entry.id} className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
                 <div>
                   <h3 className="font-semibold text-navy-800">Version {entry.version}</h3>
                   <p className="text-sm text-gray-500">{formatDate(entry.changed_at)}</p>
                 </div>
-                <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 whitespace-nowrap">
                   v{entry.version}
                 </span>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 <div>
                   <dt className="text-gray-500">Name</dt>
-                  <dd className="text-navy-800">{entry.name}</dd>
+                  <dd className="text-navy-800 break-words">{entry.name}</dd>
                 </div>
                 <div>
                   <dt className="text-gray-500">Job Role</dt>
-                  <dd className="text-navy-800">{entry.role}</dd>
+                  <dd className="text-navy-800 break-words">{entry.role}</dd>
                 </div>
                 <div>
                   <dt className="text-gray-500">Duration</dt>

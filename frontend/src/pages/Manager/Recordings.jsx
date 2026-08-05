@@ -233,14 +233,14 @@ export default function Recordings() {
   if (sessionId) {
     return (
       <div>
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full">
+            <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="text-2xl font-bold text-navy-800">Session {sessionId} Recordings</h1>
+            <h1 className="text-lg sm:text-2xl font-bold text-navy-800 break-all">Session {sessionId} Recordings</h1>
           </div>
-          <Button variant="outline" onClick={fetchRecordings}>
+          <Button variant="outline" onClick={fetchRecordings} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>
@@ -251,16 +251,16 @@ export default function Recordings() {
             <Spinner />
           </div>
         ) : !sessionInfo ? (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-12 text-center">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 sm:p-12 text-center">
             <VideoOff className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-            <p className="text-gray-600 font-medium">No recordings found for this session</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-gray-600 font-medium text-sm sm:text-base">No recordings found for this session</p>
+            <p className="text-xs sm:text-sm text-gray-400 mt-1">
               This session hasn't been taken with camera access yet, or no chunks have uploaded.
             </p>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm border-b border-gray-100 pb-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-sm border-b border-gray-100 pb-4">
               <div>
                 <span className="text-gray-500">Candidate:</span>
                 <span className="ml-2 font-medium">{sessionInfo.candidate_name || 'Unknown'}</span>
@@ -290,12 +290,12 @@ export default function Recordings() {
               <div className="space-y-3 max-h-[65vh] overflow-y-auto">
                 {sessionChunks.map((chunk, index) => (
                   <div key={chunk.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="bg-gray-50 px-3 py-2 flex items-center justify-between text-sm">
+                    <div className="bg-gray-50 px-3 py-2 flex items-center justify-between text-sm gap-2">
                       <span className="font-medium">Chunk {index + 1}</span>
                       <span className="text-gray-500">{formatDuration(chunk.duration)}</span>
                       <button
                         onClick={() => downloadSessionChunk(chunk, index)}
-                        className="p-1 text-green-600 hover:text-green-800"
+                        className="p-2 -m-1 text-green-600 hover:text-green-800 flex-shrink-0"
                         title="Download Chunk"
                       >
                         <Download className="w-4 h-4" />
@@ -318,7 +318,7 @@ export default function Recordings() {
             )}
 
             <div className="flex gap-2 pt-2 border-t border-gray-100">
-              <Button variant="danger" onClick={() => deleteSessionRecordings(sessionId)}>
+              <Button variant="danger" onClick={() => deleteSessionRecordings(sessionId)} className="w-full sm:w-auto">
                 <Trash2 className="w-4 h-4 mr-2" />
                 Delete This Session's Recordings
               </Button>
@@ -331,10 +331,10 @@ export default function Recordings() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Recordings</h1>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Recordings</h1>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchRecordings}>
+          <Button variant="outline" onClick={fetchRecordings} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>
@@ -342,65 +342,67 @@ export default function Recordings() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Session ID</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Candidate</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Status</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Total Chunks</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Duration</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Uploaded</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {recordings.length === 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
+            <thead className="bg-gray-50">
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
-                  No recordings found. Start an assessment to create recordings.
-                </td>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Session ID</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Candidate</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Status</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Total Chunks</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Duration</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Uploaded</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Actions</th>
               </tr>
-            ) : (
-              recordings.map((recording) => (
-                <tr key={recording.session_id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm font-mono">{recording.session_id}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{recording.candidate_name || 'Unknown'}</td>
-                  <td className="px-4 py-3 text-sm">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      recording.status === 'completed' ? 'bg-green-100 text-green-700' : 
-                      recording.status === 'in_progress' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-gray-100 text-gray-500'
-                    }`}>
-                      {recording.status || 'unknown'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{recording.total_chunks || 0}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{formatDuration(recording.total_duration)}</td>
-                  <td className="px-4 py-3 text-sm text-gray-500">{formatDate(recording.uploaded_at)}</td>
-                  <td className="px-4 py-3 text-sm">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => viewRecording(recording)}
-                        className="p-1 text-blue-600 hover:text-blue-800"
-                        title="View Recording"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteRecording(recording.session_id)}
-                        className="p-1 text-red-600 hover:text-red-800"
-                        title="Delete Recordings"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {recordings.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500 text-sm">
+                    No recordings found. Start an assessment to create recordings.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                recordings.map((recording) => (
+                  <tr key={recording.session_id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-mono">{recording.session_id}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{recording.candidate_name || 'Unknown'}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                        recording.status === 'completed' ? 'bg-green-100 text-green-700' : 
+                        recording.status === 'in_progress' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-gray-100 text-gray-500'
+                      }`}>
+                        {recording.status || 'unknown'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600">{recording.total_chunks || 0}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{formatDuration(recording.total_duration)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-500 whitespace-nowrap">{formatDate(recording.uploaded_at)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => viewRecording(recording)}
+                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                          title="View Recording"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteRecording(recording.session_id)}
+                          className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                          title="Delete Recordings"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {total} sessions
         </div>
@@ -414,10 +416,10 @@ export default function Recordings() {
       >
         {selectedSession && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
               <div>
                 <span className="text-gray-500">Session ID:</span>
-                <span className="ml-2 font-mono">{selectedSession.session_id}</span>
+                <span className="ml-2 font-mono break-all">{selectedSession.session_id}</span>
               </div>
               <div>
                 <span className="text-gray-500">Candidate:</span>
@@ -448,12 +450,12 @@ export default function Recordings() {
               <div className="space-y-3 max-h-[60vh] overflow-y-auto">
                 {chunkVideos.map((chunk, index) => (
                   <div key={chunk.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="bg-gray-50 px-3 py-2 flex items-center justify-between text-sm">
+                    <div className="bg-gray-50 px-3 py-2 flex items-center justify-between text-sm gap-2">
                       <span className="font-medium">Chunk {index + 1}</span>
                       <span className="text-gray-500">{formatDuration(chunk.duration)}</span>
                       <button
                         onClick={() => downloadChunk(chunk, index)}
-                        className="p-1 text-green-600 hover:text-green-800"
+                        className="p-2 -m-1 text-green-600 hover:text-green-800 flex-shrink-0"
                         title="Download Chunk"
                       >
                         <Download className="w-4 h-4" />

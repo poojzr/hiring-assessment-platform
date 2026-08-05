@@ -89,74 +89,74 @@ export default function ManagerDashboard() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Manager Dashboard</h1>
-        <div className="flex gap-3">
-          <Button variant="outline" onClick={() => navigate('/manager/live')}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Manager Dashboard</h1>
+        <div className="flex flex-wrap gap-2 sm:gap-3">
+          <Button variant="outline" onClick={() => navigate('/manager/live')} className="flex-1 sm:flex-none justify-center">
             <Eye className="w-4 h-4 mr-2" />
-            Live Monitoring ({activeSessions.length})
+            <span className="whitespace-nowrap">Live Monitoring ({activeSessions.length})</span>
           </Button>
-          <Button variant="outline" onClick={() => navigate('/sessions')}>
+          <Button variant="outline" onClick={() => navigate('/sessions')} className="flex-1 sm:flex-none justify-center">
             <FileText className="w-4 h-4 mr-2" />
             All Sessions
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Total Sessions</p>
-              <p className="text-2xl font-bold text-navy-800">{stats.total_sessions}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 truncate">Total Sessions</p>
+              <p className="text-lg sm:text-2xl font-bold text-navy-800">{stats.total_sessions}</p>
             </div>
-            <div className="bg-blue-100 p-3 rounded-lg">
-              <FileText className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Total Candidates</p>
-              <p className="text-2xl font-bold text-navy-800">{stats.total_candidates}</p>
-            </div>
-            <div className="bg-indigo-100 p-3 rounded-lg">
-              <Users className="w-6 h-6 text-indigo-600" />
+            <div className="bg-blue-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
+              <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Active Sessions</p>
-              <p className="text-2xl font-bold text-green-600">{stats.active_sessions || activeSessions.length}</p>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 truncate">Total Candidates</p>
+              <p className="text-lg sm:text-2xl font-bold text-navy-800">{stats.total_candidates}</p>
             </div>
-            <div className="bg-green-100 p-3 rounded-lg">
-              <Video className="w-6 h-6 text-green-600" />
+            <div className="bg-indigo-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
+              <Users className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Eligible Candidates</p>
-              <p className="text-2xl font-bold text-purple-600">{stats.eligible_count || 0}</p>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 truncate">Active Sessions</p>
+              <p className="text-lg sm:text-2xl font-bold text-green-600">{stats.active_sessions || activeSessions.length}</p>
             </div>
-            <div className="bg-purple-100 p-3 rounded-lg">
-              <UserCheck className="w-6 h-6 text-purple-600" />
+            <div className="bg-green-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
+              <Video className="w-4 h-4 sm:w-6 sm:h-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 truncate">Eligible Candidates</p>
+              <p className="text-lg sm:text-2xl font-bold text-purple-600">{stats.eligible_count || 0}</p>
+            </div>
+            <div className="bg-purple-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
+              <UserCheck className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-gray-500" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
+            <Shield className="w-5 h-5 text-gray-500 flex-shrink-0" />
             Integrity Distribution
           </h3>
           <div className="space-y-3">
@@ -199,9 +199,9 @@ export default function ManagerDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-gray-500" />
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
+            <AlertTriangle className="w-5 h-5 text-gray-500 flex-shrink-0" />
             Violations Summary
           </h3>
           <div className="space-y-2">
@@ -228,9 +228,9 @@ export default function ManagerDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-gray-500" />
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
+            <Clock className="w-5 h-5 text-gray-500 flex-shrink-0" />
             Quick Actions
           </h3>
           <div className="space-y-3">
@@ -286,58 +286,58 @@ export default function ManagerDashboard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-        <h3 className="font-semibold text-navy-800 mb-4">Recent Sessions</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+        <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Recent Sessions</h3>
+        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <table className="w-full min-w-[720px]">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Candidate</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Job Role</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Eligibility</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Score</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Integrity</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Candidate</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Job Role</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Status</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Eligibility</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Score</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Integrity</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {recentSessions.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan="7" className="px-4 py-8 text-center text-gray-500 text-sm">
                     No sessions found
                   </td>
                 </tr>
               ) : (
                 recentSessions.map((session) => (
                   <tr key={session.session_id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
                       <div>
-                        <p className="font-medium text-navy-800">{session.candidate_name}</p>
+                        <p className="font-medium text-navy-800 text-sm">{session.candidate_name}</p>
                         <p className="text-xs text-gray-500">{session.candidate_email}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{session.job_role}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(session.status)}`}>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{session.job_role}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusColor(session.status)}`}>
                         {session.status.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEligibilityColor(session.eligibility)}`}>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getEligibilityColor(session.eligibility)}`}>
                         {session.eligibility.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap">
                       {session.total_score !== null ? session.total_score + '%' : '-'}
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap">
                       {session.integrity_score !== null ? session.integrity_score + '%' : '-'}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
                       <button
                         onClick={() => navigate('/sessions/view/' + session.access_token)}
-                        className="p-1 text-blue-600 hover:text-blue-800"
+                        className="p-2 -m-2 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Eye className="w-4 h-4" />
                       </button>

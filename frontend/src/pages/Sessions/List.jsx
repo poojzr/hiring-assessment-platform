@@ -221,9 +221,9 @@ export default function SessionsList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Assessment Sessions</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Assessment Sessions</h1>
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={() => exportSessions('csv')}>
             <Download className="w-4 h-4 mr-1" />
             CSV
@@ -245,7 +245,7 @@ export default function SessionsList() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -261,25 +261,25 @@ export default function SessionsList() {
             options={statusOptions}
             value={statusFilter}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="w-40"
+            className="w-full sm:w-40"
           />
           <Select
             options={eligibilityOptions}
             value={eligibilityFilter}
             onChange={(e) => updateFilter('eligibility', e.target.value)}
-            className="w-44"
+            className="w-full sm:w-44"
           />
           <Select
             options={jobRoleOptions}
             value={jobRoleFilter}
             onChange={(e) => updateFilter('jobRole', e.target.value)}
-            className="w-48"
+            className="w-full sm:w-48"
           />
-          <Button variant="outline" onClick={fetchSessions}>
+          <Button variant="outline" onClick={fetchSessions} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters}>
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
             Reset Filters
           </Button>
         </div>
@@ -352,10 +352,10 @@ export default function SessionsList() {
                     {session.started_at ? formatDate(session.started_at) : 'Not started'}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-1">
                       <button
                         onClick={() => handleViewReport(session.session_id || session.id)}
-                        className="p-1 text-indigo-600 hover:text-indigo-800"
+                        className="p-2 text-indigo-600 hover:text-indigo-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
                         title="View Full Report"
                       >
                         <FileText className="w-4 h-4" />
@@ -369,21 +369,21 @@ export default function SessionsList() {
                             toast.error('No access token available for this session')
                           }
                         }}
-                        className="p-1 text-blue-600 hover:text-blue-800"
+                        className="p-2 text-blue-600 hover:text-blue-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
                         title="View Details"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleCopyToken(session.access_token || '')}
-                        className="p-1 text-gray-600 hover:text-gray-800"
+                        className="p-2 text-gray-600 hover:text-gray-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
                         title="Copy Assessment Link"
                       >
                         <Copy className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleViewRecordings(session.session_id || session.id)}
-                        className="p-1 text-purple-600 hover:text-purple-800"
+                        className="p-2 text-purple-600 hover:text-purple-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
                         title="View Recordings"
                       >
                         <Video className="w-4 h-4" />
@@ -391,7 +391,7 @@ export default function SessionsList() {
                       {session.status !== 'completed' && session.status !== 'expired' && (
                         <button
                           onClick={() => openResendModal(session.session_id || session.id, session.candidate_name, session.candidate_email)}
-                          className="p-1 text-green-600 hover:text-green-800"
+                          className="p-2 text-green-600 hover:text-green-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
                           title="Resend Email"
                         >
                           <Mail className="w-4 h-4" />
@@ -399,7 +399,7 @@ export default function SessionsList() {
                       )}
                       <button
                         onClick={() => handleDeleteSession(session.session_id || session.id)}
-                        className="p-1 text-red-600 hover:text-red-800"
+                        className="p-2 text-red-600 hover:text-red-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
                         title="Delete Session"
                       >
                         <Trash2 className="w-4 h-4" />

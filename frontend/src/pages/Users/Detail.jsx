@@ -38,15 +38,15 @@ export default function UserDetail() {
   if (!user) return null
 
   return (
-    <div className="max-w-3xl">
-      <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate('/users')} className="flex items-center gap-2 text-gray-500 hover:text-gray-700">
+    <div className="max-w-3xl px-4 sm:px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <button onClick={() => navigate('/users')} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm sm:text-base">
           <ArrowLeft className="w-4 h-4" />
           Back to Users
         </button>
         <button
           onClick={() => navigate(`/users/${id}/edit`)}
-          className="flex items-center gap-2 text-accent-500 hover:text-accent-600"
+          className="flex items-center gap-2 text-accent-500 hover:text-accent-600 text-sm sm:text-base"
         >
           <Edit className="w-4 h-4" />
           Edit User
@@ -54,13 +54,13 @@ export default function UserDetail() {
       </div>
 
       <Card>
-        <div className="flex items-start gap-6">
-          <div className="w-20 h-20 bg-accent-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <UserIcon className="w-10 h-10 text-accent-500" />
+        <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-accent-100 rounded-full flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+            <UserIcon className="w-8 h-8 sm:w-10 sm:h-10 text-accent-500" />
           </div>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-navy-800">{user.name}</h1>
-            <div className="flex items-center gap-3 mt-1">
+          <div className="flex-1 text-center sm:text-left">
+            <h1 className="text-xl sm:text-2xl font-bold text-navy-800 break-words">{user.name}</h1>
+            <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 mt-1">
               <Badge variant={user.role === 'admin' ? 'admin' : user.role === 'manager' ? 'manager' : 'candidate'}>
                 {user.role}
               </Badge>
@@ -71,19 +71,19 @@ export default function UserDetail() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200">
           <div className="flex items-center gap-3">
-            <Mail className="w-4 h-4 text-gray-400" />
-            <div>
+            <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+            <div className="min-w-0">
               <p className="text-xs text-gray-500">Email</p>
-              <p className="text-sm text-navy-800">{user.email}</p>
+              <p className="text-sm text-navy-800 break-words">{user.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Calendar className="w-4 h-4 text-gray-400" />
-            <div>
+            <Calendar className="w-4 h-4 text-gray-400 flex-shrink-0" />
+            <div className="min-w-0">
               <p className="text-xs text-gray-500">Created</p>
-              <p className="text-sm text-navy-800">
+              <p className="text-sm text-navy-800 break-words">
                 {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
               </p>
             </div>

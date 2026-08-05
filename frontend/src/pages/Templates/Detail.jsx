@@ -37,36 +37,36 @@ export default function TemplateDetail() {
   }
 
   if (!template) {
-    return <div className="text-center py-12 text-gray-500">Template not found</div>
+    return <div className="text-center py-12 text-gray-500 px-4">Template not found</div>
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full">
+    <div className="max-w-4xl mx-auto px-4 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6">
+        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-navy-800">{template.name}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800 break-words">{template.name}</h1>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        <Link to={`/templates/${template.id}/edit`} className="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md flex items-center gap-1">
+      <div className="flex flex-wrap gap-2 mb-6">
+        <Link to={`/templates/${template.id}/edit`} className="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md flex items-center gap-1 text-sm sm:text-base">
           <Edit className="w-4 h-4" /> Edit
         </Link>
-        <Link to={`/templates/${template.id}/history`} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center gap-1">
+        <Link to={`/templates/${template.id}/history`} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center gap-1 text-sm sm:text-base">
           <History className="w-4 h-4" /> History
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <dt className="text-sm font-medium text-gray-500">Name</dt>
-            <dd className="text-navy-800">{template.name}</dd>
+            <dd className="text-navy-800 break-words">{template.name}</dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">Job Role</dt>
-            <dd className="text-navy-800">{template.role}</dd>
+            <dd className="text-navy-800 break-words">{template.role}</dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">Duration</dt>
@@ -88,12 +88,12 @@ export default function TemplateDetail() {
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">Created At</dt>
-            <dd className="text-navy-800">{formatDate(template.created_at)}</dd>
+            <dd className="text-navy-800 break-words">{formatDate(template.created_at)}</dd>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
         <h2 className="text-lg font-semibold text-navy-800 mb-4">Sections</h2>
         {template.sections_config?.sections?.length === 0 ? (
           <p className="text-gray-500">No sections defined</p>
@@ -101,9 +101,9 @@ export default function TemplateDetail() {
           <div className="space-y-4">
             {template.sections_config?.sections?.map((section, index) => (
               <div key={section.id} className="border border-gray-200 rounded-lg p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-medium text-navy-800">Section {index + 1}: {section.id}</h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+                  <h4 className="font-medium text-navy-800 break-words">Section {index + 1}: {section.id}</h4>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                     section.type === 'MCQ' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
                   }`}>
                     {section.type}

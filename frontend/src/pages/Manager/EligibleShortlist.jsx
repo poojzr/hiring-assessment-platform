@@ -127,9 +127,9 @@ export default function EligibleShortlist() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Eligible Shortlist</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Eligible Shortlist</h1>
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={() => exportList('csv')}>
             <Download className="w-4 h-4 mr-1" />
             CSV
@@ -143,7 +143,7 @@ export default function EligibleShortlist() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -155,7 +155,7 @@ export default function EligibleShortlist() {
               />
             </div>
           </div>
-          <Button variant="outline" onClick={fetchEligibleCandidates}>
+          <Button variant="outline" onClick={fetchEligibleCandidates} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
@@ -195,7 +195,7 @@ export default function EligibleShortlist() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>{candidate.job_role}</TableCell>
+                  <TableCell className="whitespace-nowrap">{candidate.job_role}</TableCell>
                   <TableCell>
                     <span className="font-semibold">{candidate.total_score}%</span>
                   </TableCell>
@@ -203,7 +203,7 @@ export default function EligibleShortlist() {
                     <span className="font-medium">{candidate.integrity_score}%</span>
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEligibilityColor(candidate.eligibility)}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getEligibilityColor(candidate.eligibility)}`}>
                       {candidate.eligibility.replace('_', ' ')}
                     </span>
                   </TableCell>
@@ -216,21 +216,21 @@ export default function EligibleShortlist() {
                     <div className="flex justify-end gap-1">
                       <button
                         onClick={() => navigate(`/manager/report/${candidate.candidate_id}`)}
-                        className="p-1 text-blue-600 hover:text-blue-800"
+                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                         title="View Report"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => navigate(`/sessions/view/${candidate.access_token}`)}
-                        className="p-1 text-green-600 hover:text-green-800"
+                        className="p-2 -m-1 text-green-600 hover:text-green-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                         title="View Session"
                       >
                         <UserCheck className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => openDeleteModal(candidate)}
-                        className="p-1 text-red-600 hover:text-red-800"
+                        className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                         title="Delete Candidate"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -263,7 +263,7 @@ export default function EligibleShortlist() {
           <p className="text-sm text-gray-500">
             {candidates.find(c => c.candidate_id === deleteModal.candidateId)?.session_id ? 'This candidate has an active session and will be deactivated.' : 'This candidate has no sessions and will be permanently deleted.'}
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               onClick={handleDeleteCandidate}
               isLoading={deleting}

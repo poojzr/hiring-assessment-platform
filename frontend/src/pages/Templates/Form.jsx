@@ -166,8 +166,6 @@ export default function TemplateForm() {
       pass_threshold: parseFloat(formData.pass_threshold),
     }
 
-    console.log('Submitting payload:', JSON.stringify(payload, null, 2))
-
     try {
       if (isEdit) {
         await updateTemplate(parseInt(id), payload)
@@ -218,17 +216,17 @@ export default function TemplateForm() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full">
+    <div className="max-w-4xl mx-auto px-4 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6">
+        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-navy-800">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">
           {isEdit ? 'Edit Template' : 'Create Template'}
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 space-y-5 sm:space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Template Name *</label>
@@ -255,7 +253,7 @@ export default function TemplateForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Total Duration (minutes) *</label>
             <input
@@ -282,12 +280,12 @@ export default function TemplateForm() {
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-3">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
             <h3 className="text-lg font-semibold text-navy-800">Sections</h3>
             <button
               type="button"
               onClick={addSection}
-              className="bg-accent-500 hover:bg-accent-600 text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
+              className="bg-accent-500 hover:bg-accent-600 text-white px-3 py-1 rounded-md text-sm flex items-center gap-1 justify-center"
             >
               <Plus className="w-4 h-4" /> Add Section
             </button>
@@ -299,18 +297,18 @@ export default function TemplateForm() {
             <div className="space-y-4">
               {formData.sections.map((section, index) => (
                 <div key={section.id} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
                     <h4 className="font-medium text-navy-800">Section {index + 1}</h4>
                     <button
                       type="button"
                       onClick={() => removeSection(index)}
-                      className="p-1 text-red-600 hover:text-red-800"
+                      className="p-1 text-red-600 hover:text-red-800 flex-shrink-0 self-end sm:self-auto"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Section ID</label>
                       <input
@@ -318,7 +316,7 @@ export default function TemplateForm() {
                         value={section.id}
                         onChange={(e) => updateSection(index, 'id', e.target.value)}
                         placeholder="section_1"
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -326,7 +324,7 @@ export default function TemplateForm() {
                       <select
                         value={section.type}
                         onChange={(e) => updateSection(index, 'type', e.target.value)}
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       >
                         <option value="MCQ">MCQ</option>
                         <option value="CODING">Coding</option>
@@ -339,7 +337,7 @@ export default function TemplateForm() {
                         value={section.count}
                         onChange={(e) => updateSection(index, 'count', e.target.value)}
                         min="1"
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -349,7 +347,7 @@ export default function TemplateForm() {
                         value={section.duration_minutes}
                         onChange={(e) => updateSection(index, 'duration_minutes', e.target.value)}
                         min="1"
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -359,7 +357,7 @@ export default function TemplateForm() {
                         value={section.order}
                         onChange={(e) => updateSection(index, 'order', e.target.value)}
                         min="1"
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -370,7 +368,7 @@ export default function TemplateForm() {
                         onChange={(e) => updateSection(index, 'weight', e.target.value)}
                         min="0"
                         step="0.1"
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                   </div>
@@ -382,14 +380,14 @@ export default function TemplateForm() {
                       value={section.topic || ''}
                       onChange={(e) => updateSection(index, 'topic', e.target.value)}
                       placeholder="e.g., Python Basics, Algorithms"
-                      className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                     />
                     <p className="text-xs text-gray-400 mt-1">Leave empty to select from all topics</p>
                   </div>
 
                   <div className="mt-3">
                     <label className="block text-xs font-medium text-gray-700 mb-1">Difficulty Distribution</label>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                       {DIFFICULTY_OPTIONS.map((diff) => (
                         <div key={diff} className="flex items-center gap-2">
                           <span className="text-xs text-gray-600 capitalize">{diff}</span>
@@ -404,7 +402,7 @@ export default function TemplateForm() {
                             min="0"
                             max="1"
                             step="0.1"
-                            className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                            className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                           />
                         </div>
                       ))}
@@ -426,10 +424,10 @@ export default function TemplateForm() {
           <label className="text-sm text-gray-700">Active</label>
         </div>
 
-        <div className="flex gap-3 pt-4 border-t border-gray-200">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
           <button
             type="submit"
-            className="bg-accent-500 hover:bg-accent-600 text-white px-6 py-2 rounded-md disabled:opacity-50"
+            className="bg-accent-500 hover:bg-accent-600 text-white px-6 py-2 rounded-md disabled:opacity-50 text-sm sm:text-base"
             disabled={submitting}
           >
             {submitting ? 'Saving...' : isEdit ? 'Update Template' : 'Create Template'}
@@ -437,7 +435,7 @@ export default function TemplateForm() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md text-sm sm:text-base"
           >
             Cancel
           </button>

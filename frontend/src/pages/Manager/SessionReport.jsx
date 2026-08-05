@@ -126,9 +126,9 @@ export default function SessionReport() {
 
   if (!report) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12 px-4">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-navy-800">Report Not Found</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-navy-800">Report Not Found</h2>
         <Button className="mt-4" onClick={() => navigate('/sessions')}>Back to Sessions</Button>
       </div>
     )
@@ -141,14 +141,14 @@ export default function SessionReport() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-2xl font-bold text-navy-800">Session Report</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Session Report</h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={() => exportReport('csv')}>
             <Download className="w-4 h-4 mr-1" />
             CSV
@@ -164,8 +164,8 @@ export default function SessionReport() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           <div className="flex items-center gap-3">
             <div className="bg-blue-100 p-3 rounded-full flex-shrink-0">
               <User className="w-6 h-6 text-blue-600" />
@@ -205,11 +205,11 @@ export default function SessionReport() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div>
             <p className="text-sm text-gray-500">Status</p>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(session.status)}`}>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusColor(session.status)}`}>
               {session.status}
             </span>
           </div>
@@ -227,7 +227,7 @@ export default function SessionReport() {
               {session.eligibility}
             </Badge>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center col-span-2 md:col-span-1">
             {session.status === 'completed' && session.eligibility !== 'manager_overridden' && (
               <Button variant="warning" size="sm" onClick={() => setOverrideModal(true)}>
                 <Edit3 className="w-4 h-4 mr-1" />
@@ -238,11 +238,12 @@ export default function SessionReport() {
         </div>
       </div>
 
-      <div className="flex gap-2 mb-6 overflow-x-auto">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
         <Button
           variant={activeTab === 'overview' ? 'primary' : 'outline'}
           size="sm"
           onClick={() => setActiveTab('overview')}
+          className="flex-shrink-0"
         >
           Overview
         </Button>
@@ -250,6 +251,7 @@ export default function SessionReport() {
           variant={activeTab === 'answers' ? 'primary' : 'outline'}
           size="sm"
           onClick={() => setActiveTab('answers')}
+          className="flex-shrink-0"
         >
           Answers
         </Button>
@@ -257,6 +259,7 @@ export default function SessionReport() {
           variant={activeTab === 'violations' ? 'primary' : 'outline'}
           size="sm"
           onClick={() => setActiveTab('violations')}
+          className="flex-shrink-0"
         >
           Violations ({violations.length})
         </Button>
@@ -264,38 +267,38 @@ export default function SessionReport() {
 
       {activeTab === 'overview' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-            <h3 className="font-semibold text-navy-800 mb-4">Violation Summary</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+            <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Violation Summary</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               <div className="text-center p-3 bg-red-50 rounded-lg">
-                <p className="text-2xl font-bold text-red-600">{report.violation_summary?.critical || 0}</p>
-                <p className="text-sm text-gray-500">Critical</p>
+                <p className="text-xl sm:text-2xl font-bold text-red-600">{report.violation_summary?.critical || 0}</p>
+                <p className="text-xs sm:text-sm text-gray-500">Critical</p>
               </div>
               <div className="text-center p-3 bg-orange-50 rounded-lg">
-                <p className="text-2xl font-bold text-orange-600">{report.violation_summary?.high || 0}</p>
-                <p className="text-sm text-gray-500">High</p>
+                <p className="text-xl sm:text-2xl font-bold text-orange-600">{report.violation_summary?.high || 0}</p>
+                <p className="text-xs sm:text-sm text-gray-500">High</p>
               </div>
               <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                <p className="text-2xl font-bold text-yellow-600">{report.violation_summary?.medium || 0}</p>
-                <p className="text-sm text-gray-500">Medium</p>
+                <p className="text-xl sm:text-2xl font-bold text-yellow-600">{report.violation_summary?.medium || 0}</p>
+                <p className="text-xs sm:text-sm text-gray-500">Medium</p>
               </div>
               <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <p className="text-2xl font-bold text-blue-600">{report.violation_summary?.low || 0}</p>
-                <p className="text-sm text-gray-500">Low</p>
+                <p className="text-xl sm:text-2xl font-bold text-blue-600">{report.violation_summary?.low || 0}</p>
+                <p className="text-xs sm:text-sm text-gray-500">Low</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-            <h3 className="font-semibold text-navy-800 mb-4">Violation Type Distribution</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+            <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Violation Type Distribution</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {Object.entries(violationColors).map(([type, color]) => {
                 const count = violations.filter(v => v.type === type).length
                 if (count === 0) return null
                 return (
                   <div key={type} className={`p-3 rounded-lg ${color}`}>
-                    <p className="text-sm font-medium">{type.replace('_', ' ')}</p>
-                    <p className="text-2xl font-bold">{count}</p>
+                    <p className="text-xs sm:text-sm font-medium">{type.replace('_', ' ')}</p>
+                    <p className="text-xl sm:text-2xl font-bold">{count}</p>
                   </div>
                 )
               })}
@@ -305,19 +308,19 @@ export default function SessionReport() {
       )}
 
       {activeTab === 'answers' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4">Answer Review</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Answer Review</h3>
           {answers.length === 0 ? (
             <p className="text-gray-500 text-center py-4">No answers available</p>
           ) : (
             <div className="space-y-4">
               {answers.map((answer, index) => (
                 <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                     <div>
                       <p className="font-medium text-navy-800">Question {answer.question_id}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       {answer.is_correct ? (
                         <Badge variant="success">Correct</Badge>
                       ) : (
@@ -328,8 +331,8 @@ export default function SessionReport() {
                       </span>
                     </div>
                   </div>
-                  <div className="mt-2 bg-gray-50 p-3 rounded-md">
-                    <p className="text-sm text-gray-600">
+                  <div className="mt-2 bg-gray-50 p-3 rounded-md overflow-x-auto">
+                    <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">
                       Answer: {JSON.stringify(answer.answer_data)}
                     </p>
                   </div>
@@ -341,30 +344,30 @@ export default function SessionReport() {
       )}
 
       {activeTab === 'violations' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4">Violations Timeline</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Violations Timeline</h3>
           {violations.length === 0 ? (
             <p className="text-gray-500 text-center py-4">No violations recorded</p>
           ) : (
             <div className="space-y-3">
               {violations.map((violation, index) => (
-                <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <div className="flex items-center gap-3">
-                    <AlertTriangle className={`w-5 h-5 ${
+                <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 gap-2">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <AlertTriangle className={`w-5 h-5 flex-shrink-0 ${
                       violation.severity === 'critical' ? 'text-red-500' :
                       violation.severity === 'high' ? 'text-orange-500' :
                       violation.severity === 'medium' ? 'text-yellow-500' :
                       'text-blue-500'
                     }`} />
-                    <div>
-                      <p className="font-medium text-navy-800">{violation.type}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium text-navy-800 truncate">{violation.type}</p>
                       <p className="text-xs text-gray-500">
                         {violation.timestamp ? new Date(violation.timestamp).toLocaleString() : 'N/A'}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getSeverityColor(violation.severity)}`}>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getSeverityColor(violation.severity)}`}>
                       {violation.severity}
                     </span>
                     {violation.clip_url && (
@@ -417,7 +420,7 @@ export default function SessionReport() {
             />
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               onClick={handleOverride}
               isLoading={submitting}

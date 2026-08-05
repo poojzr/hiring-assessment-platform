@@ -125,9 +125,9 @@ export default function UsersList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Users</h1>
-        <Button onClick={() => navigate('/users/create')}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Users</h1>
+        <Button onClick={() => navigate('/users/create')} className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           New User
         </Button>
@@ -135,7 +135,7 @@ export default function UsersList() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -151,19 +151,19 @@ export default function UsersList() {
             options={roleOptions}
             value={roleFilter}
             onChange={(e) => updateFilter('role', e.target.value)}
-            className="w-40"
+            className="w-full sm:w-40"
           />
           <Select
             options={statusOptions}
             value={statusFilter}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="w-40"
+            className="w-full sm:w-40"
           />
-          <Button variant="outline" onClick={fetchUsers}>
+          <Button variant="outline" onClick={fetchUsers} className="w-full sm:w-auto">
             <RotateCcw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters}>
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
             Reset Filters
           </Button>
         </div>
@@ -195,16 +195,16 @@ export default function UsersList() {
             ) : (
               users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium text-navy-800">{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                  <TableCell className="font-medium text-navy-800 whitespace-nowrap">{user.name}</TableCell>
+                  <TableCell className="whitespace-nowrap">{user.email}</TableCell>
                   <TableCell>{getRoleBadge(user.role)}</TableCell>
                   <TableCell>{getStatusBadge(user.is_active)}</TableCell>
-                  <TableCell className="text-sm text-gray-500">{formatDate(user.created_at)}</TableCell>
+                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(user.created_at)}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-1">
                       <button
                         onClick={() => navigate(`/users/${user.id}/edit`)}
-                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
@@ -212,7 +212,7 @@ export default function UsersList() {
                         <>
                           <button
                             onClick={() => openDeleteModal(user.id, user.name, user.role)}
-                            className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                            className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                             title="Delete options"
                           >
                             <UserX className="w-4 h-4" />
@@ -220,7 +220,7 @@ export default function UsersList() {
                           {user.is_active && (
                             <button
                               onClick={() => handleDelete(user.id, user.name, user.role, false)}
-                              className="p-1 text-orange-500 hover:text-orange-700 transition-colors"
+                              className="p-2 -m-1 text-orange-500 hover:text-orange-700 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                               title="Soft delete (deactivate)"
                             >
                               <UserMinus className="w-4 h-4" />
@@ -252,7 +252,7 @@ export default function UsersList() {
           <p className="text-sm text-gray-500">
             Choose an option below:
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => handleDelete(deleteModal.userId, deleteModal.userName, deleteModal.userRole, false)}
               className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-colors"

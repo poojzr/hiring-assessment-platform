@@ -96,42 +96,42 @@ export default function SessionViewByToken() {
 
   if (error || !session) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12 px-4">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
         <h2 className="text-xl font-bold text-navy-800">Session Not Found</h2>
-        <p className="text-gray-500">{error || 'The session you are looking for does not exist.'}</p>
+        <p className="text-gray-500 text-sm sm:text-base">{error || 'The session you are looking for does not exist.'}</p>
         <Button className="mt-4" onClick={handleCancel}>Back to Sessions</Button>
       </div>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={handleCancel} className="p-2 hover:bg-gray-100 rounded-full">
+    <div className="max-w-4xl mx-auto px-4 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6">
+        <button onClick={handleCancel} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-navy-800">Session Details</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Session Details</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="flex justify-between items-start">
-          <div>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+          <div className="min-w-0">
             <p className="text-sm text-gray-500">Access Token</p>
-            <div className="flex items-center gap-2 mt-1">
-              <code className="bg-gray-100 px-3 py-1 rounded text-sm font-mono">
+            <div className="flex flex-wrap items-center gap-2 mt-1">
+              <code className="bg-gray-100 px-3 py-1 rounded text-sm font-mono break-all">
                 {accessToken}
               </code>
               <button
                 onClick={handleCopyToken}
-                className="p-1 text-gray-400 hover:text-gray-600"
+                className="p-1 text-gray-400 hover:text-gray-600 flex-shrink-0"
                 title="Copy Link"
               >
                 <Copy className="w-4 h-4" />
               </button>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-shrink-0">
             <Button
               variant="outline"
               size="sm"
@@ -144,33 +144,33 @@ export default function SessionViewByToken() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2">
-            <User className="w-5 h-5 text-gray-500" /> Candidate
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
+            <User className="w-5 h-5 text-gray-500 flex-shrink-0" /> Candidate
           </h3>
           <div className="space-y-2">
-            <p className="font-medium">{session.candidate_name || 'Unknown'}</p>
-            <p className="text-sm text-gray-500">{session.candidate_email || 'No email'}</p>
+            <p className="font-medium break-words">{session.candidate_name || 'Unknown'}</p>
+            <p className="text-sm text-gray-500 break-words">{session.candidate_email || 'No email'}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-gray-500" /> Template
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
+            <FileText className="w-5 h-5 text-gray-500 flex-shrink-0" /> Template
           </h3>
           <div className="space-y-2">
-            <p className="font-medium">{session.template_name || 'Unknown'}</p>
-            <p className="text-sm text-gray-500">{session.job_role || 'No role'}</p>
+            <p className="font-medium break-words">{session.template_name || 'Unknown'}</p>
+            <p className="text-sm text-gray-500 break-words">{session.job_role || 'No role'}</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
-        <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-gray-500" /> Status & Timeline
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+        <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
+          <Clock className="w-5 h-5 text-gray-500 flex-shrink-0" /> Status & Timeline
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <div>
             <p className="text-sm text-gray-500">Status</p>
             <div className="mt-1">{getStatusBadge(session.status)}</div>
@@ -181,20 +181,20 @@ export default function SessionViewByToken() {
           </div>
           <div>
             <p className="text-sm text-gray-500">Started At</p>
-            <p className="text-sm font-medium">{session.started_at ? formatDate(session.started_at) : 'Not started'}</p>
+            <p className="text-sm font-medium break-words">{session.started_at ? formatDate(session.started_at) : 'Not started'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Finished At</p>
-            <p className="text-sm font-medium">{session.finished_at ? formatDate(session.finished_at) : 'Not finished'}</p>
+            <p className="text-sm font-medium break-words">{session.finished_at ? formatDate(session.finished_at) : 'Not finished'}</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-        <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2">
-          <Shield className="w-5 h-5 text-gray-500" /> Results
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+        <h3 className="font-semibold text-navy-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
+          <Shield className="w-5 h-5 text-gray-500 flex-shrink-0" /> Results
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <div>
             <p className="text-sm text-gray-500">Total Score</p>
             <p className="text-xl font-bold text-navy-800">
@@ -209,7 +209,7 @@ export default function SessionViewByToken() {
           </div>
           <div>
             <p className="text-sm text-gray-500">Cheating Risk</p>
-            <p className="text-xl font-bold text-navy-800 capitalize">{session.cheating_risk || 'N/A'}</p>
+            <p className="text-xl font-bold text-navy-800 capitalize break-words">{session.cheating_risk || 'N/A'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Duration</p>

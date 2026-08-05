@@ -54,8 +54,8 @@ export default function CandidateDetail() {
 
   if (!candidate) {
     return (
-      <div className="text-center py-12">
-        <h2 className="text-xl font-bold text-navy-800">Candidate Not Found</h2>
+      <div className="text-center py-12 px-4">
+        <h2 className="text-lg sm:text-xl font-bold text-navy-800">Candidate Not Found</h2>
         <Button className="mt-4" onClick={handleCancel}>Back to Candidates</Button>
       </div>
     )
@@ -65,35 +65,35 @@ export default function CandidateDetail() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={handleCancel} className="p-2 hover:bg-gray-100 rounded-full">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6">
+        <button onClick={handleCancel} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-navy-800">Candidate Details</h1>
-        <Link to={'/candidates/' + candidate.id + '/edit'} className="ml-auto">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800 flex-1 min-w-0">Candidate Details</h1>
+        <Link to={'/candidates/' + candidate.id + '/edit'} className="flex-shrink-0">
           <Button size="sm">
             <Edit className="w-4 h-4 mr-1" /> Edit
           </Button>
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h2 className="text-xl font-bold text-navy-800">{candidate.name}</h2>
+          <div className="min-w-0">
+            <h2 className="text-lg sm:text-xl font-bold text-navy-800 truncate">{candidate.name}</h2>
             <div className="flex items-center gap-2 mt-2">
-              <Mail className="w-4 h-4 text-gray-400" />
-              <span className="text-gray-600">{candidate.email}</span>
+              <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+              <span className="text-gray-600 text-sm sm:text-base truncate">{candidate.email}</span>
             </div>
             {candidate.phone && (
               <div className="flex items-center gap-2 mt-1">
-                <Phone className="w-4 h-4 text-gray-400" />
-                <span className="text-gray-600">{candidate.phone}</span>
+                <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <span className="text-gray-600 text-sm sm:text-base">{candidate.phone}</span>
               </div>
             )}
             {candidate.resume_url && (
               <div className="flex items-center gap-2 mt-1">
-                <FileText className="w-4 h-4 text-gray-400" />
+                <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
                 <a href={candidate.resume_url} target="_blank" rel="noopener noreferrer" className="text-accent-500 hover:underline text-sm">
                   View Resume
                 </a>
@@ -135,9 +135,9 @@ export default function CandidateDetail() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-        <h3 className="font-semibold text-navy-800 mb-4">Summary</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+        <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Summary</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           <div className="bg-gray-50 p-3 rounded">
             <p className="text-xs text-gray-500">Created</p>
             <p className="text-sm font-medium">{formatDate(candidate.created_at)}</p>

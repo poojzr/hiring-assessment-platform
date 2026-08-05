@@ -124,14 +124,14 @@ export default function QuestionsList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Questions</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate('/questions/bulk-import')}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Questions</h1>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => navigate('/questions/bulk-import')} className="flex-1 sm:flex-none justify-center">
             <Upload className="w-4 h-4 mr-2" />
             Bulk Import
           </Button>
-          <Button onClick={() => navigate('/questions/create')}>
+          <Button onClick={() => navigate('/questions/create')} className="flex-1 sm:flex-none justify-center">
             <Plus className="w-4 h-4 mr-2" />
             New Question
           </Button>
@@ -140,7 +140,7 @@ export default function QuestionsList() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -156,19 +156,19 @@ export default function QuestionsList() {
             options={typeOptions}
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-            className="w-40"
+            className="w-full sm:w-40"
           />
           <Select
             options={difficultyOptions}
             value={filters.difficulty}
             onChange={(e) => setFilters({ ...filters, difficulty: e.target.value })}
-            className="w-40"
+            className="w-full sm:w-40"
           />
-          <Button variant="outline" onClick={fetchQuestions}>
+          <Button variant="outline" onClick={fetchQuestions} className="w-full sm:w-auto">
             <RotateCcw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters}>
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
             Reset Filters
           </Button>
         </div>
@@ -207,12 +207,12 @@ export default function QuestionsList() {
                   </TableCell>
                   <TableCell>{getTypeBadge(q.type)}</TableCell>
                   <TableCell>{getDifficultyBadge(q.difficulty)}</TableCell>
-                  <TableCell>{q.topic || '-'}</TableCell>
+                  <TableCell className="whitespace-nowrap">{q.topic || '-'}</TableCell>
                   <TableCell>
                     {q.tags && q.tags.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {q.tags.slice(0, 2).map((tag) => (
-                          <span key={tag} className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">
+                          <span key={tag} className="px-1.5 py-0.5 bg-gray-100 rounded text-xs whitespace-nowrap">
                             {tag}
                           </span>
                         ))}
@@ -225,24 +225,24 @@ export default function QuestionsList() {
                     )}
                   </TableCell>
                   <TableCell>{getStatusBadge(q.is_active)}</TableCell>
-                  <TableCell className="text-sm text-gray-500">{formatDate(q.created_at)}</TableCell>
+                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(q.created_at)}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-1">
                       <button
                         onClick={() => navigate(`/questions/${q.id}`)}
-                        className="p-1 text-gray-600 hover:text-gray-800 transition-colors"
+                        className="p-2 -m-1 text-gray-600 hover:text-gray-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => navigate(`/questions/${q.id}/edit`)}
-                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => openDeleteModal(q.id, q.text)}
-                        className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                        className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -270,7 +270,7 @@ export default function QuestionsList() {
           <p className="text-sm text-gray-500">
             <strong>{deleteModal.questionText}</strong>
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => {
                 handleDelete(deleteModal.questionId, deleteModal.questionText)

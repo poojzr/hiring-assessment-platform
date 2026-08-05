@@ -64,9 +64,9 @@ export default function Dashboard() {
 
   if (!isAdmin && user) {
     return (
-      <div className="flex flex-col items-center justify-center h-96">
-        <h1 className="text-2xl font-bold text-navy-800 mb-4">Manager Dashboard</h1>
-        <p className="text-gray-500">Manager dashboard is coming soon.</p>
+      <div className="flex flex-col items-center justify-center h-96 px-4 text-center">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800 mb-4">Manager Dashboard</h1>
+        <p className="text-gray-500 text-sm sm:text-base">Manager dashboard is coming soon.</p>
         <p className="text-sm text-gray-400 mt-2">You have manager access. Admin features are restricted.</p>
       </div>
     )
@@ -83,24 +83,24 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-navy-800 mb-6">Dashboard</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-navy-800 mb-6">Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-6">
         {cards.map((card) => (
           <div
             key={card.title}
             onClick={() => navigate(card.link)}
-            className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer"
+            className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow cursor-pointer"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">{card.title}</p>
-                <p className="text-2xl font-bold text-navy-800 mt-1">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm text-gray-500 truncate">{card.title}</p>
+                <p className="text-lg sm:text-2xl font-bold text-navy-800 mt-1">
                   {isLoading ? '...' : card.value}
                 </p>
               </div>
-              <div className={`${card.color} p-3 rounded-lg text-white`}>
-                <card.icon className="w-6 h-6 text-white" />
+              <div className={`${card.color} p-2 sm:p-3 rounded-lg text-white flex-shrink-0`}>
+                <card.icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
           </div>

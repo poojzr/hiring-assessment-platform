@@ -98,9 +98,9 @@ export default function TemplatesList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Assessment Templates</h1>
-        <Button onClick={() => navigate('/templates/create')}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Assessment Templates</h1>
+        <Button onClick={() => navigate('/templates/create')} className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           New Template
         </Button>
@@ -108,7 +108,7 @@ export default function TemplatesList() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -124,13 +124,13 @@ export default function TemplatesList() {
             options={statusOptions}
             value={statusFilter}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="w-40"
+            className="w-full sm:w-40"
           />
-          <Button variant="outline" onClick={fetchTemplates}>
+          <Button variant="outline" onClick={fetchTemplates} className="w-full sm:w-auto">
             <RotateCcw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters}>
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
             Reset Filters
           </Button>
         </div>
@@ -164,36 +164,36 @@ export default function TemplatesList() {
             ) : (
               templates.map((template) => (
                 <TableRow key={template.id}>
-                  <TableCell className="font-medium text-navy-800">{template.name}</TableCell>
-                  <TableCell>{template.job_role_name || template.role}</TableCell>
-                  <TableCell>{template.duration_minutes} min</TableCell>
+                  <TableCell className="font-medium text-navy-800 whitespace-nowrap">{template.name}</TableCell>
+                  <TableCell className="whitespace-nowrap">{template.job_role_name || template.role}</TableCell>
+                  <TableCell className="whitespace-nowrap">{template.duration_minutes} min</TableCell>
                   <TableCell>{template.pass_threshold}%</TableCell>
                   <TableCell>{getStatusBadge(template.is_active)}</TableCell>
                   <TableCell>{template.sections_config?.sections?.length || 0}</TableCell>
-                  <TableCell className="text-sm text-gray-500">{formatDate(template.created_at)}</TableCell>
+                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(template.created_at)}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-1">
                       <button
                         onClick={() => navigate(`/templates/${template.id}`)}
-                        className="p-1 text-gray-600 hover:text-gray-800 transition-colors"
+                        className="p-2 -m-1 text-gray-600 hover:text-gray-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => navigate(`/templates/${template.id}/edit`)}
-                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => navigate(`/templates/${template.id}/history`)}
-                        className="p-1 text-purple-600 hover:text-purple-800 transition-colors"
+                        className="p-2 -m-1 text-purple-600 hover:text-purple-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <History className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => openDeleteModal(template.id, template.name)}
-                        className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                        className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -219,7 +219,7 @@ export default function TemplatesList() {
             Are you sure you want to delete template <strong>{deleteModal.templateName}</strong>?
           </p>
           <p className="text-sm text-gray-500">This action cannot be undone.</p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => handleDelete(deleteModal.templateId, deleteModal.templateName)}
               className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"

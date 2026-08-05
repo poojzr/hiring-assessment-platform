@@ -336,32 +336,32 @@ export default function LiveMonitoring() {
 
   return (
     <div className="h-full">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Live Monitoring</h1>
-        <div className="flex items-center gap-3">
-          <span className={'px-3 py-1 rounded-full text-sm ' + (isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Live Monitoring</h1>
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <span className={'px-3 py-1 rounded-full text-xs sm:text-sm ' + (isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
             {isConnected ? 'Connected' : 'Disconnected'}
           </span>
-          <Button variant="outline" onClick={fetchActiveSessions}>
-            <RefreshCw className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={fetchActiveSessions} size="sm">
+            <RefreshCw className="w-4 h-4 mr-1 sm:mr-2" />
             Refresh
           </Button>
           {!isConnected && (
-            <Button variant="primary" onClick={reconnect}>
+            <Button variant="primary" onClick={reconnect} size="sm">
               Reconnect
             </Button>
           )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-            <h3 className="font-semibold text-navy-800 mb-3 flex items-center gap-2">
-              <Users className="w-5 h-5 text-gray-500" />
+            <h3 className="font-semibold text-navy-800 mb-3 flex items-center gap-2 text-sm sm:text-base">
+              <Users className="w-5 h-5 text-gray-500 flex-shrink-0" />
               Active Sessions ({sessions.length})
             </h3>
-            <div className="max-h-[600px] overflow-y-auto space-y-2">
+            <div className="max-h-[280px] lg:max-h-[600px] overflow-y-auto space-y-2">
               {sessions.length === 0 ? (
                 <p className="text-sm text-gray-500 text-center py-4">No active sessions</p>
               ) : (
@@ -375,17 +375,17 @@ export default function LiveMonitoring() {
                         : 'bg-gray-50 hover:bg-gray-100 border border-transparent'
                     )}
                   >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium text-navy-800">{session.candidate_name}</p>
-                        <p className="text-xs text-gray-500">{session.candidate_email}</p>
-                        <p className="text-xs text-gray-400">{session.job_role}</p>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="min-w-0">
+                        <p className="font-medium text-navy-800 text-sm truncate">{session.candidate_name}</p>
+                        <p className="text-xs text-gray-500 truncate">{session.candidate_email}</p>
+                        <p className="text-xs text-gray-400 truncate">{session.job_role}</p>
                       </div>
                       <Badge variant="primary">Live</Badge>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                    <div className="flex justify-between text-xs text-gray-500 mt-2 gap-2">
                       <span>Integrity: {session.integrity_score || 100}%</span>
-                      <span>Started: {session.started_at ? new Date(session.started_at).toLocaleTimeString() : '-'}</span>
+                      <span className="whitespace-nowrap">{session.started_at ? new Date(session.started_at).toLocaleTimeString() : '-'}</span>
                     </div>
                   </div>
                 ))
@@ -398,25 +398,24 @@ export default function LiveMonitoring() {
           {selectedSession ? (
             <div>
               <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="font-semibold text-navy-800 flex items-center gap-2">
-                      <User className="w-4 h-4 text-gray-500" />
-                      {selectedSession.candidate_name}
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-navy-800 flex items-center gap-2 text-sm sm:text-base">
+                      <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                      <span className="truncate">{selectedSession.candidate_name}</span>
                     </h3>
-                    <p className="text-sm text-gray-500 flex items-center gap-2">
-                      <Mail className="w-3 h-3" />
-                      {selectedSession.candidate_email}
-                      <span className="text-gray-300">|</span>
-                      {selectedSession.job_role}
+                    <p className="text-sm text-gray-500 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="flex items-center gap-1"><Mail className="w-3 h-3 flex-shrink-0" />{selectedSession.candidate_email}</span>
+                      <span className="text-gray-300 hidden sm:inline">|</span>
+                      <span>{selectedSession.job_role}</span>
                     </p>
-                    <div className="flex items-center gap-3 text-xs text-gray-400 mt-1">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mt-1">
                       <span>Integrity Score: <span className="font-semibold">{selectedSession.integrity_score || 100}%</span></span>
                       <span>Frames: {frameCountRef.current}</span>
                       <span>Violations: {violations.length}</span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button size="sm" variant="warning" onClick={sendWarning}>
                       <Send className="w-4 h-4 mr-1" />
                       Send Warning
@@ -444,9 +443,9 @@ export default function LiveMonitoring() {
                         </div>
                       </>
                     ) : (
-                      <div className="text-center text-gray-500">
-                        <VideoOff className="w-16 h-16 mx-auto mb-4" />
-                        <p>Connecting to stream...</p>
+                      <div className="text-center text-gray-500 px-4">
+                        <VideoOff className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4" />
+                        <p className="text-sm sm:text-base">Connecting to stream...</p>
                         <button onClick={reconnect} className="mt-2 text-sm text-primary-400 hover:text-primary-300">
                           Reconnect
                         </button>
@@ -457,8 +456,8 @@ export default function LiveMonitoring() {
 
                 <div className="lg:col-span-1 space-y-4">
                   <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 max-h-[200px] overflow-y-auto">
-                    <h4 className="font-semibold text-navy-800 mb-3 flex items-center gap-2">
-                      <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                    <h4 className="font-semibold text-navy-800 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                      <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0" />
                       Violations Log ({violations.length})
                     </h4>
                     {violations.length === 0 ? (
@@ -466,12 +465,12 @@ export default function LiveMonitoring() {
                     ) : (
                       <div className="space-y-2">
                         {violations.slice(-5).reverse().map((violation, index) => (
-                          <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100">
-                            <div>
-                              <p className="text-sm font-medium">{violation.type.replace(/_/g, ' ')}</p>
+                          <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 gap-2">
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">{violation.type.replace(/_/g, ' ')}</p>
                               <p className="text-xs text-gray-500">{violation.timestamp}</p>
                             </div>
-                            <span className={'px-2 py-1 rounded-full text-xs font-medium ' + getSeverityColor(violation.severity)}>
+                            <span className={'px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ' + getSeverityColor(violation.severity)}>
                               {violation.severity}
                             </span>
                           </div>
@@ -482,13 +481,13 @@ export default function LiveMonitoring() {
 
                   <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-semibold text-navy-800 flex items-center gap-2">
-                        <MessageSquare className="w-5 h-5 text-accent-600" />
+                      <h4 className="font-semibold text-navy-800 flex items-center gap-2 text-sm sm:text-base">
+                        <MessageSquare className="w-5 h-5 text-accent-600 flex-shrink-0" />
                         Chat with Candidate
                       </h4>
                       <button
                         onClick={() => setIsChatOpen(!isChatOpen)}
-                        className="text-xs text-gray-400 hover:text-gray-600"
+                        className="text-xs text-gray-400 hover:text-gray-600 p-1"
                       >
                         {isChatOpen ? 'Hide' : 'Show'}
                       </button>
@@ -528,12 +527,12 @@ export default function LiveMonitoring() {
                             onChange={(e) => setChatInput(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
                             placeholder="Type a message..."
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm"
+                            className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm"
                             disabled={!selectedSession || !isConnected}
                           />
                           <button
                             onClick={sendChatMessage}
-                            className="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 disabled:opacity-50 transition-colors"
+                            className="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 disabled:opacity-50 transition-colors flex-shrink-0"
                             disabled={!selectedSession || !isConnected}
                           >
                             <Send className="w-4 h-4" />
@@ -546,10 +545,10 @@ export default function LiveMonitoring() {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-12 text-center">
-              <Video className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-navy-800 mb-2">No Session Selected</h3>
-              <p className="text-gray-500">Select a candidate from the list to start monitoring</p>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 sm:p-12 text-center">
+              <Video className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-base sm:text-lg font-semibold text-navy-800 mb-2">No Session Selected</h3>
+              <p className="text-sm sm:text-base text-gray-500">Select a candidate from the list to start monitoring</p>
               {!isConnected && (
                 <Button onClick={reconnect} className="mt-4">
                   <RefreshCw className="w-4 h-4 mr-2" />

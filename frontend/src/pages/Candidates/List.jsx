@@ -4,7 +4,6 @@ import { Plus, Edit, Trash2, Eye, Search, RefreshCw, Copy, Mail, CheckCircle, Fi
 import toast from 'react-hot-toast'
 import { getCandidates, deleteCandidate, checkATSScore, resendAssessmentEmail } from '../../api/candidates'
 import { getThresholds } from '../../api/thresholds'
-import { formatDate } from '../../utils/helpers'
 import Table, { TableHead, TableHeader, TableBody, TableRow, TableCell } from '../../components/ui/Table'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
@@ -175,9 +174,9 @@ export default function CandidatesList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">Candidates</h1>
-        <Button onClick={() => navigate('/candidates/create')}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Candidates</h1>
+        <Button onClick={() => navigate('/candidates/create')} className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           Add Candidate
         </Button>
@@ -185,7 +184,7 @@ export default function CandidatesList() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -201,19 +200,19 @@ export default function CandidatesList() {
             options={shortlistedOptions}
             value={shortlistedFilter}
             onChange={(e) => updateFilter('shortlisted', e.target.value)}
-            className="w-44"
+            className="w-full sm:w-44"
           />
           <Select
             options={jobRoleOptions}
             value={jobRoleFilter}
             onChange={(e) => updateFilter('jobRole', e.target.value)}
-            className="w-48"
+            className="w-full sm:w-48"
           />
-          <Button variant="outline" onClick={fetchCandidates}>
+          <Button variant="outline" onClick={fetchCandidates} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters}>
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
             Reset Filters
           </Button>
         </div>
@@ -249,9 +248,9 @@ export default function CandidatesList() {
                 const isEligible = candidate.ats_score !== null && candidate.ats_score >= threshold
                 return (
                   <TableRow key={candidate.id}>
-                    <TableCell className="font-medium text-navy-800">{candidate.name}</TableCell>
-                    <TableCell>{candidate.email}</TableCell>
-                    <TableCell>{candidate.job_role || 'N/A'}</TableCell>
+                    <TableCell className="font-medium text-navy-800 whitespace-nowrap">{candidate.name}</TableCell>
+                    <TableCell className="whitespace-nowrap">{candidate.email}</TableCell>
+                    <TableCell className="whitespace-nowrap">{candidate.job_role || 'N/A'}</TableCell>
                     <TableCell>
                       {candidate.ats_score !== null ? (
                         <span className={'font-medium ' + (isEligible ? 'text-green-600' : 'text-red-600')}>
@@ -270,24 +269,24 @@ export default function CandidatesList() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <button
                           onClick={() => navigate('/candidates/' + candidate.id)}
-                          className="p-1 text-gray-600 hover:text-gray-800"
+                          className="p-2 -m-1 text-gray-600 hover:text-gray-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                           title="View Details"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => navigate('/candidates/' + candidate.id + '/edit')}
-                          className="p-1 text-blue-600 hover:text-blue-800"
+                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => openAtsModal(candidate.id, candidate.name, candidate.ats_score)}
-                          className="p-1 text-purple-600 hover:text-purple-800"
+                          className="p-2 -m-1 text-purple-600 hover:text-purple-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                           title="Check ATS Score"
                         >
                           <FileText className="w-4 h-4" />
@@ -296,21 +295,21 @@ export default function CandidatesList() {
                           <>
                             <button
                               onClick={() => handleCopyToken(candidate.access_token)}
-                              className="p-1 text-green-600 hover:text-green-800"
+                              className="p-2 -m-1 text-green-600 hover:text-green-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                               title="Copy Assessment Link"
                             >
                               <Copy className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleResendEmail(candidate.id)}
-                              className="p-1 text-blue-500 hover:text-blue-700"
+                              className="p-2 -m-1 text-blue-500 hover:text-blue-700 min-h-[36px] min-w-[36px] flex items-center justify-center"
                               title="Resend Email"
                             >
                               <Mail className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => navigate('/sessions/view/' + candidate.access_token)}
-                              className="p-1 text-indigo-600 hover:text-indigo-800"
+                              className="p-2 -m-1 text-indigo-600 hover:text-indigo-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                               title="View Session"
                             >
                               <CheckCircle className="w-4 h-4" />
@@ -319,7 +318,7 @@ export default function CandidatesList() {
                         )}
                         <button
                           onClick={() => openDeleteModal(candidate.id, candidate.name)}
-                          className="p-1 text-red-600 hover:text-red-800"
+                          className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -347,7 +346,7 @@ export default function CandidatesList() {
             Are you sure you want to delete <strong>{deleteModal.candidateName}</strong>?
           </p>
           <p className="text-sm text-red-600">This will also delete all associated sessions and data.</p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               variant="danger"
               onClick={() => handleDelete(deleteModal.candidateId, deleteModal.candidateName)}
@@ -397,7 +396,7 @@ export default function CandidatesList() {
             />
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               onClick={handleATSCheck}
               isLoading={isChecking}

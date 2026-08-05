@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Dashboard from './pages/Dashboard'
+import Landing from './pages/Landing'
 import UsersList from './pages/Users/List'
 import UserForm from './pages/Users/Form'
 import UserDetail from './pages/Users/Detail'
@@ -40,6 +41,10 @@ import Recordings from './pages/Manager/Recordings'
 
 const router = createBrowserRouter([
   {
+    path: '/',
+    element: <Landing />,
+  },
+  {
     path: '/login',
     element: <Login />,
   },
@@ -68,7 +73,7 @@ const router = createBrowserRouter([
     element: <AssessmentThankYou />,
   },
   {
-    path: '/',
+    path: '/dashboard',
     element: <ProtectedRoute />,
     children: [
       {
@@ -79,139 +84,154 @@ const router = createBrowserRouter([
             element: <Navigate to="/dashboard" replace />,
           },
           {
-            path: '/dashboard',
+            path: '',
             element: <Dashboard />,
           },
           {
-            path: '/users',
+            path: 'users',
             element: <UsersList />,
           },
           {
-            path: '/users/create',
+            path: 'users/create',
             element: <UserForm />,
           },
           {
-            path: '/users/:id/edit',
+            path: 'users/:id/edit',
             element: <UserForm />,
           },
           {
-            path: '/users/:id',
+            path: 'users/:id',
             element: <UserDetail />,
           },
           {
-            path: '/questions',
+            path: 'questions',
             element: <QuestionsList />,
           },
           {
-            path: '/questions/create',
+            path: 'questions/create',
             element: <QuestionForm />,
           },
           {
-            path: '/questions/:id/edit',
+            path: 'questions/:id/edit',
             element: <QuestionForm />,
           },
           {
-            path: '/questions/:id',
+            path: 'questions/:id',
             element: <QuestionDetail />,
           },
           {
-            path: '/questions/bulk-import',
+            path: 'questions/bulk-import',
             element: <BulkImport />,
           },
           {
-            path: '/templates',
+            path: 'templates',
             element: <TemplatesList />,
           },
           {
-            path: '/templates/create',
+            path: 'templates/create',
             element: <TemplateForm />,
           },
           {
-            path: '/templates/:id',
+            path: 'templates/:id',
             element: <TemplateDetail />,
           },
           {
-            path: '/templates/:id/edit',
+            path: 'templates/:id/edit',
             element: <TemplateForm />,
           },
           {
-            path: '/templates/:id/history',
+            path: 'templates/:id/history',
             element: <TemplateHistory />,
           },
           {
-            path: '/thresholds',
+            path: 'thresholds',
             element: <ThresholdsList />,
           },
           {
-            path: '/thresholds/create',
+            path: 'thresholds/create',
             element: <ThresholdForm />,
           },
           {
-            path: '/thresholds/:id/edit',
+            path: 'thresholds/:id/edit',
             element: <ThresholdForm />,
           },
           {
-            path: '/sessions',
+            path: 'sessions',
             element: <SessionsList />,
           },
           {
-            path: '/sessions/create',
+            path: 'sessions/create',
             element: <SessionCreate />,
           },
           {
-            path: '/sessions/bulk-create',
+            path: 'sessions/bulk-create',
             element: <BulkSessionCreate />,
           },
           {
-            path: '/sessions/view/:accessToken',
+            path: 'sessions/view/:accessToken',
             element: <SessionViewByToken />,
           },
           {
-            path: '/candidates',
+            path: 'candidates',
             element: <CandidatesList />,
           },
           {
-            path: '/candidates/create',
+            path: 'candidates/create',
             element: <CandidateCreate />,
           },
           {
-            path: '/candidates/:id/edit',
+            path: 'candidates/:id/edit',
             element: <CandidateEdit />,
           },
           {
-            path: '/candidates/:id',
+            path: 'candidates/:id',
             element: <CandidateDetail />,
           },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/manager',
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
           {
-            path: '/manager/dashboard',
+            index: true,
+            element: <Navigate to="/manager/dashboard" replace />,
+          },
+          {
+            path: 'dashboard',
             element: <ManagerDashboard />,
           },
           {
-            path: '/manager/live',
+            path: 'live',
             element: <LiveMonitoring />,
           },
           {
-            path: '/manager/report/:candidateId',
+            path: 'report/:candidateId',
             element: <CandidateReport />,
           },
           {
-            path: '/manager/eligible-shortlist',
+            path: 'eligible-shortlist',
             element: <EligibleShortlist />,
           },
           {
-            path: '/manager/session-report/:sessionId',
+            path: 'session-report/:sessionId',
             element: <SessionReport />,
           },
           {
-            path: '/manager/analytics',
+            path: 'analytics',
             element: <Analytics />,
           },
           {
-            path: '/manager/recordings',
+            path: 'recordings',
             element: <Recordings />,
           },
           {
-            path: '/manager/recordings/:sessionId',
+            path: 'recordings/:sessionId',
             element: <Recordings />,
           },
         ],

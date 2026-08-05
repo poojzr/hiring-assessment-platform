@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Plus, Edit, Trash2, Search, RotateCcw } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { getThresholds, deleteThreshold } from '../../api/thresholds'
-import { formatDate } from '../../utils/helpers'
 import Table, { TableHead, TableHeader, TableBody, TableRow, TableCell } from '../../components/ui/Table'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
@@ -84,9 +83,9 @@ export default function ThresholdsList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">ATS Thresholds</h1>
-        <Button onClick={() => navigate('/thresholds/create')}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">ATS Thresholds</h1>
+        <Button onClick={() => navigate('/thresholds/create')} className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           New Threshold
         </Button>
@@ -94,7 +93,7 @@ export default function ThresholdsList() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -106,11 +105,11 @@ export default function ThresholdsList() {
               />
             </div>
           </div>
-          <Button variant="outline" onClick={fetchThresholds}>
+          <Button variant="outline" onClick={fetchThresholds} className="w-full sm:w-auto">
             <RotateCcw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters}>
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
             Reset Filters
           </Button>
         </div>
@@ -142,22 +141,22 @@ export default function ThresholdsList() {
               thresholds.map((threshold) => (
                 <TableRow key={threshold.id}>
                   <TableCell className="font-mono text-sm text-gray-500">{threshold.id}</TableCell>
-                  <TableCell className="font-medium text-navy-800">{threshold.job_role_name}</TableCell>
+                  <TableCell className="font-medium text-navy-800 whitespace-nowrap">{threshold.job_role_name}</TableCell>
                   <TableCell>
                     <Badge variant="primary">{threshold.ats_threshold}%</Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-gray-500">{formatDate(threshold.created_at)}</TableCell>
+                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(threshold.created_at)}</TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-1">
                       <button
                         onClick={() => navigate(`/thresholds/${threshold.id}/edit`)}
-                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => openDeleteModal(threshold.id, threshold.job_role_name)}
-                        className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                        className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -183,7 +182,7 @@ export default function ThresholdsList() {
             Are you sure you want to delete threshold for <strong>{deleteModal.thresholdName}</strong>?
           </p>
           <p className="text-sm text-gray-500">This action cannot be undone.</p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => handleDelete(deleteModal.thresholdId, deleteModal.thresholdName)}
               className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
