@@ -132,15 +132,15 @@ export default function BulkSessionCreate() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full">
+    <div className="max-w-6xl mx-auto px-4 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6">
+        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-navy-800">Bulk Session Creation</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Bulk Session Creation</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex-1 min-w-[200px]">
             <label className="block text-sm font-medium text-gray-700 mb-1">Job Role</label>
@@ -208,7 +208,7 @@ export default function BulkSessionCreate() {
             <tbody className="divide-y divide-gray-200">
               {filteredCandidates.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan="6" className="px-4 py-8 text-center text-gray-500 text-sm">
                     No candidates found
                   </td>
                 </tr>
@@ -250,7 +250,7 @@ export default function BulkSessionCreate() {
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <Button
           onClick={handleBulkCreate}
           isLoading={submitting}
@@ -260,14 +260,14 @@ export default function BulkSessionCreate() {
           <Users className="w-4 h-4 mr-2" />
           Create Sessions for {selectedCandidates.length} Candidate{selectedCandidates.length !== 1 ? 's' : ''}
         </Button>
-        <Button variant="outline" onClick={() => navigate('/sessions')}>
+        <Button variant="outline" onClick={() => navigate('/app/sessions')} className="flex-1">
           View All Sessions
         </Button>
       </div>
 
       {results && (
-        <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <h3 className="font-semibold text-navy-800 mb-4">Import Results</h3>
+        <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Import Results</h3>
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="bg-gray-50 p-3 rounded text-center">
               <p className="text-2xl font-bold text-navy-800">{results.total}</p>
@@ -284,7 +284,7 @@ export default function BulkSessionCreate() {
           </div>
           <div className="max-h-48 overflow-y-auto">
             {results.items.map((item, index) => (
-              <div key={index} className={`text-sm p-2 ${item.status === 'success' ? 'text-green-600' : 'text-red-600'} border-b border-gray-100`}>
+              <div key={index} className={`text-sm p-2 ${item.status === 'success' ? 'text-green-600' : 'text-red-600'} border-b border-gray-100 break-words`}>
                 {item.status === 'success' ? '✓' : '✗'} {item.name}: {item.message}
                 {item.accessToken && (
                   <span className="ml-2 text-xs text-gray-400">Token: {item.accessToken.slice(0, 8)}...</span>

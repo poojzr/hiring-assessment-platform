@@ -166,82 +166,86 @@ export default function EligibleShortlist() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <Table>
-          <TableHead>
-            <TableHeader>Candidate</TableHeader>
-            <TableHeader>Job Role</TableHeader>
-            <TableHeader>Score</TableHeader>
-            <TableHeader>Integrity</TableHeader>
-            <TableHeader>Eligibility</TableHeader>
-            <TableHeader>Status</TableHeader>
-            <TableHeader className="text-right">Actions</TableHeader>
-          </TableHead>
-          <TableBody>
-            {candidates.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                  No eligible candidates found
-                </TableCell>
-              </TableRow>
-            ) : (
-              candidates.map((candidate) => (
-                <TableRow key={candidate.session_id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium text-navy-800">{candidate.candidate_name}</p>
-                      <p className="text-xs text-gray-500">{candidate.candidate_email}</p>
-                      {candidate.candidate_phone && (
-                        <p className="text-xs text-gray-400">{candidate.candidate_phone}</p>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">{candidate.job_role}</TableCell>
-                  <TableCell>
-                    <span className="font-semibold">{candidate.total_score}%</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="font-medium">{candidate.integrity_score}%</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getEligibilityColor(candidate.eligibility)}`}>
-                      {candidate.eligibility.replace('_', ' ')}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={candidate.cheating_risk === 'clean' ? 'success' : 'warning'}>
-                      {candidate.cheating_risk}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => navigate(`/manager/report/${candidate.candidate_id}`)}
-                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                        title="View Report"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => navigate(`/sessions/view/${candidate.access_token}`)}
-                        className="p-2 -m-1 text-green-600 hover:text-green-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                        title="View Session"
-                      >
-                        <UserCheck className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(candidate)}
-                        className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                        title="Delete Candidate"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Candidate</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Job Role</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Score</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Integrity</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Eligibility</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {candidates.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-8 text-gray-500 text-sm">
+                    No eligible candidates found
+                  </td>
+                </tr>
+              ) : (
+                candidates.map((candidate) => (
+                  <tr key={candidate.session_id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                      <div>
+                        <p className="font-medium text-navy-800 text-sm">{candidate.candidate_name}</p>
+                        <p className="text-xs text-gray-500">{candidate.candidate_email}</p>
+                        {candidate.candidate_phone && (
+                          <p className="text-xs text-gray-400">{candidate.candidate_phone}</p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{candidate.job_role}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">
+                      <span className="font-semibold">{candidate.total_score}%</span>
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">
+                      <span className="font-medium">{candidate.integrity_score}%</span>
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getEligibilityColor(candidate.eligibility)}`}>
+                        {candidate.eligibility.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                      <Badge variant={candidate.cheating_risk === 'clean' ? 'success' : 'warning'}>
+                        {candidate.cheating_risk}
+                      </Badge>
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-right">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          onClick={() => navigate(`/app/manager/report/${candidate.candidate_id}`)}
+                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                          title="View Report"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/app/sessions/view/${candidate.access_token}`)}
+                          className="p-2 -m-1 text-green-600 hover:text-green-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                          title="View Session"
+                        >
+                          <UserCheck className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(candidate)}
+                          className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                          title="Delete Candidate"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {total} eligible candidates
         </div>

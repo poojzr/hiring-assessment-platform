@@ -100,14 +100,14 @@ export default function TemplatesList() {
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Assessment Templates</h1>
-        <Button onClick={() => navigate('/templates/create')} className="w-full sm:w-auto justify-center">
+        <Button onClick={() => navigate('/app/templates/create')} className="w-full sm:w-auto justify-center text-sm">
           <Plus className="w-4 h-4 mr-2" />
           New Template
         </Button>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -124,86 +124,86 @@ export default function TemplatesList() {
             options={statusOptions}
             value={statusFilter}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="w-full sm:w-40"
+            className="w-[160px] sm:w-40 flex-shrink-0"
           />
-          <Button variant="outline" onClick={fetchTemplates} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={fetchTemplates} className="w-full sm:w-auto flex-shrink-0 text-sm">
             <RotateCcw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto flex-shrink-0 text-sm">
             Reset Filters
           </Button>
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <Table>
-          <TableHead>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Job Role</TableHeader>
-            <TableHeader>Duration</TableHeader>
-            <TableHeader>Pass %</TableHeader>
-            <TableHeader>Status</TableHeader>
-            <TableHeader>Sections</TableHeader>
-            <TableHeader>Created</TableHeader>
-            <TableHeader className="text-right">Actions</TableHeader>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : templates.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                  No templates found
-                </TableCell>
-              </TableRow>
-            ) : (
-              templates.map((template) => (
-                <TableRow key={template.id}>
-                  <TableCell className="font-medium text-navy-800 whitespace-nowrap">{template.name}</TableCell>
-                  <TableCell className="whitespace-nowrap">{template.job_role_name || template.role}</TableCell>
-                  <TableCell className="whitespace-nowrap">{template.duration_minutes} min</TableCell>
-                  <TableCell>{template.pass_threshold}%</TableCell>
-                  <TableCell>{getStatusBadge(template.is_active)}</TableCell>
-                  <TableCell>{template.sections_config?.sections?.length || 0}</TableCell>
-                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(template.created_at)}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => navigate(`/templates/${template.id}`)}
-                        className="p-2 -m-1 text-gray-600 hover:text-gray-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => navigate(`/templates/${template.id}/edit`)}
-                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => navigate(`/templates/${template.id}/history`)}
-                        className="p-2 -m-1 text-purple-600 hover:text-purple-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <History className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(template.id, template.name)}
-                        className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Name</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Job Role</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Duration</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Pass %</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Sections</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Created</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-gray-500 text-sm">Loading...</td>
+                </tr>
+              ) : templates.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-gray-500 text-sm">No templates found</td>
+                </tr>
+              ) : (
+                templates.map((template) => (
+                  <tr key={template.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 font-medium text-navy-800 whitespace-nowrap text-sm">{template.name}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{template.job_role_name || template.role}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{template.duration_minutes} min</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{template.pass_threshold}%</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">{getStatusBadge(template.is_active)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{template.sections_config?.sections?.length || 0}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-500 whitespace-nowrap">{formatDate(template.created_at)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-right">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          onClick={() => navigate(`/app/templates/${template.id}`)}
+                          className="p-2 -m-1 text-gray-600 hover:text-gray-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/app/templates/${template.id}/edit`)}
+                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/app/templates/${template.id}/history`)}
+                          className="p-2 -m-1 text-purple-600 hover:text-purple-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <History className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(template.id, template.name)}
+                          className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {total} templates
         </div>
@@ -215,20 +215,18 @@ export default function TemplatesList() {
         title="Delete Template"
       >
         <div className="space-y-4">
-          <p className="text-gray-700">
-            Are you sure you want to delete template <strong>{deleteModal.templateName}</strong>?
-          </p>
+          <p className="text-gray-700 text-sm sm:text-base">Are you sure you want to delete template <strong>{deleteModal.templateName}</strong>?</p>
           <p className="text-sm text-gray-500">This action cannot be undone.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => handleDelete(deleteModal.templateId, deleteModal.templateName)}
-              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
+              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors text-sm"
             >
               Delete
             </button>
             <button
               onClick={() => setDeleteModal({ isOpen: false, templateId: null, templateName: '' })}
-              className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors"
+              className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors text-sm"
             >
               Cancel
             </button>

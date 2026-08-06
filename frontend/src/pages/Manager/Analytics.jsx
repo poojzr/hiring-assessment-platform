@@ -269,26 +269,26 @@ export default function Analytics() {
           <table className="w-full min-w-[720px]">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Question</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Type</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Difficulty</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Topic</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Uses</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Pass Rate</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Flags</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Question</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Type</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Difficulty</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Topic</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Uses</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Pass Rate</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Flags</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {questions.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-4 py-8 text-center text-gray-500 text-sm">
+                  <td colSpan={7} className="text-center py-8 text-gray-500 text-sm">
                     No question data available
                   </td>
                 </tr>
               ) : (
                 questions.map((q) => (
                   <tr key={q.question_id} className="hover:bg-gray-50">
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-navy-800 max-w-xs truncate">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-navy-800 max-w-xs truncate">
                       {q.text}
                     </td>
                     <td className="px-3 py-2.5 sm:px-4 sm:py-3">
@@ -301,11 +301,11 @@ export default function Analytics() {
                         {q.difficulty || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{q.topic || 'N/A'}</td>
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600">{q.total_uses || 0}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-600 whitespace-nowrap">{q.topic || 'N/A'}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-600">{q.total_uses || 0}</td>
                     <td className="px-3 py-2.5 sm:px-4 sm:py-3">
                       {q.pass_rate !== null && q.pass_rate !== undefined ? (
-                        <span className={'font-semibold text-xs sm:text-sm ' + (
+                        <span className={'font-semibold text-sm ' + (
                           q.pass_rate >= 70 ? 'text-green-600' :
                           q.pass_rate >= 40 ? 'text-yellow-600' :
                           'text-red-600'
@@ -313,7 +313,7 @@ export default function Analytics() {
                           {q.pass_rate}%
                         </span>
                       ) : (
-                        <span className="text-gray-400 text-xs sm:text-sm">N/A</span>
+                        <span className="text-gray-400 text-sm">N/A</span>
                       )}
                     </td>
                     <td className="px-3 py-2.5 sm:px-4 sm:py-3">

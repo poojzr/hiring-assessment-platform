@@ -1,493 +1,419 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { 
-  ArrowLeft, User, Mail, Phone, Briefcase, 
-  FileText, Clock, Shield, AlertTriangle, 
-  Download, Eye, Play, Pause, 
-  CheckCircle, XCircle, AlertCircle, Edit3
-} from 'lucide-react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Plus, Edit, Trash2, Eye, Search, RefreshCw, Copy, Mail, CheckCircle, FileText } from 'lucide-react'
 import toast from 'react-hot-toast'
-import apiClient from '../../api/client'
-import Button from '../../components/ui/Button'
+import { getCandidates, deleteCandidate, checkATSScore, resendAssessmentEmail } from '../../api/candidates'
+import { getThresholds } from '../../api/thresholds'
+import Table, { TableHead, TableHeader, TableBody, TableRow, TableCell } from '../../components/ui/Table'
 import Badge from '../../components/ui/Badge'
-import Spinner from '../../components/ui/Spinner'
-import Modal from '../../components/ui/Modal'
+import Button from '../../components/ui/Button'
 import Select from '../../components/ui/Select'
+import Modal from '../../components/ui/Modal'
+import Input from '../../components/ui/Input'
 
-export default function CandidateReport() {
-  const { candidateId } = useParams()
+export default function CandidatesList() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [candidates, setCandidates] = useState([])
+  const [total, setTotal] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [thresholds, setThresholds] = useState([])
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, candidateId: null, candidateName: '' })
+  const [atsModal, setAtsModal] = useState({ isOpen: false, candidateId: null, candidateName: '', atsScore: 70 })
+  const [isChecking, setIsChecking] = useState(false)
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
-  const [report, setReport] = useState(null)
-  const [activeTab, setActiveTab] = useState('overview')
-  const [overrideModal, setOverrideModal] = useState({ isOpen: false, sessionId: null })
-  const [overrideData, setOverrideData] = useState({ eligibility: 'manager_overridden', reason: '' })
-  const [submitting, setSubmitting] = useState(false)
+
+  const search = searchParams.get('search') || ''
+  const shortlistedFilter = searchParams.get('shortlisted') || ''
+  const jobRoleFilter = searchParams.get('jobRole') || ''
 
   useEffect(() => {
-    fetchReport()
-  }, [candidateId])
+    fetchThresholds()
+  }, [])
 
-  const fetchReport = async () => {
-    setLoading(true)
+  useEffect(() => {
+    fetchCandidates()
+  }, [search, shortlistedFilter, jobRoleFilter])
+
+  const fetchThresholds = async () => {
     try {
-      const response = await apiClient.get(`/manager/candidates/${candidateId}/report`)
-      setReport(response.data)
+      const data = await getThresholds()
+      setThresholds(data || [])
     } catch (error) {
-      console.error('Failed to fetch report:', error)
-      toast.error('Failed to load candidate report')
+      setThresholds([])
+    }
+  }
+
+  const fetchCandidates = async () => {
+    setIsLoading(true)
+    try {
+      const params = {
+        search: search || undefined,
+        shortlisted: shortlistedFilter === 'true' ? true : shortlistedFilter === 'false' ? false : undefined,
+        job_role_id: jobRoleFilter ? parseInt(jobRoleFilter) : undefined,
+        limit: 100
+      }
+      const data = await getCandidates(params)
+      setCandidates(data.items || [])
+      setTotal(data.total || 0)
+    } catch (error) {
+      toast.error('Failed to load candidates')
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
-  const exportReport = async (format) => {
+  const updateFilter = (key, value) => {
+    if (value) {
+      searchParams.set(key, value)
+    } else {
+      searchParams.delete(key)
+    }
+    setSearchParams(searchParams)
+  }
+
+  const resetFilters = () => {
+    searchParams.delete('search')
+    searchParams.delete('shortlisted')
+    searchParams.delete('jobRole')
+    setSearchParams(searchParams)
+  }
+
+  const handleDelete = async (id, name) => {
     try {
-      const response = await apiClient.get(`/manager/candidates/${candidateId}/export`, {
-        params: { format },
-        responseType: 'blob'
-      })
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `candidate_report_${candidateId}.${format}`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      toast.success(`Report exported as ${format.toUpperCase()}`)
+      await deleteCandidate(id)
+      toast.success('Candidate deleted successfully')
+      setDeleteModal({ isOpen: false, candidateId: null, candidateName: '' })
+      fetchCandidates()
     } catch (error) {
-      toast.error('Failed to export report')
+      const status = error.response?.status
+      const errorData = error.response?.data
+      let errorMessage = 'Failed to delete candidate'
+
+      if (status === 400 || status === 422) {
+        if (errorData && typeof errorData === 'object') {
+          if (errorData.detail) {
+            errorMessage = errorData.detail
+          } else if (errorData.message) {
+            errorMessage = errorData.message
+          } else {
+            errorMessage = JSON.stringify(errorData)
+          }
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData
+        }
+
+        if (errorMessage.toLowerCase().includes('session') || errorMessage.toLowerCase().includes('associated')) {
+          toast.error(`Cannot delete "${name}" - Candidate has associated session. Delete the session first.`)
+        } else {
+          toast.error(errorMessage)
+        }
+      } else if (status === 404) {
+        toast.error('Candidate not found')
+      } else {
+        toast.error(errorMessage)
+      }
     }
   }
 
-  const handleOverride = async () => {
-    if (!overrideData.reason.trim()) {
-      toast.error('Please provide a reason for override')
+  const openDeleteModal = (id, name) => {
+    setDeleteModal({ isOpen: true, candidateId: id, candidateName: name })
+  }
+
+  const handleATSCheck = async () => {
+    const { candidateId, atsScore } = atsModal
+    setIsChecking(true)
+    try {
+      const result = await checkATSScore(candidateId, atsScore)
+      if (result.shortlisted) {
+        toast.success('Candidate shortlisted. Score: ' + atsScore + '%')
+        if (result.session_created) {
+          toast.success('Assessment session created successfully')
+        }
+        if (result.email_sent) {
+          toast.success('Assessment email sent to candidate')
+        } else {
+          toast.warning('Session created but email failed to send')
+        }
+        if (result.access_token) {
+          toast.success('Access Token: ' + result.access_token.slice(0, 12) + '...')
+        }
+      } else {
+        toast.warning('Not shortlisted. Score: ' + atsScore + '% below threshold')
+      }
+      setAtsModal({ isOpen: false, candidateId: null, candidateName: '', atsScore: 70 })
+      fetchCandidates()
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to check ATS score')
+    } finally {
+      setIsChecking(false)
+    }
+  }
+
+  const openAtsModal = (id, name, currentScore) => {
+    setAtsModal({
+      isOpen: true,
+      candidateId: id,
+      candidateName: name,
+      atsScore: currentScore || 70
+    })
+  }
+
+  const handleResendEmail = async (id) => {
+    try {
+      await resendAssessmentEmail(id)
+      toast.success('Assessment email resent successfully')
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to resend email')
+    }
+  }
+
+  const handleCopyToken = (token) => {
+    if (!token) {
+      toast.error('No access token available')
       return
     }
-    setSubmitting(true)
-    try {
-      await apiClient.post(`/manager/sessions/${overrideModal.sessionId}/override`, {
-        eligibility: overrideData.eligibility,
-        override_reason: overrideData.reason
-      })
-      toast.success('Eligibility overridden successfully')
-      setOverrideModal({ isOpen: false, sessionId: null })
-      fetchReport()
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to override eligibility')
-    } finally {
-      setSubmitting(false)
+    const link = window.location.origin + '/assessment/' + token
+    navigator.clipboard.writeText(link)
+    toast.success('Assessment link copied to clipboard')
+  }
+
+  const getThresholdForCandidate = (candidate) => {
+    if (candidate.job_role_id) {
+      const threshold = thresholds.find(t => t.id === candidate.job_role_id)
+      return threshold?.ats_threshold || 70
     }
+    return 70
   }
 
-  const getSeverityColor = (severity) => {
-    const map = {
-      critical: 'bg-red-100 text-red-700',
-      high: 'bg-orange-100 text-orange-700',
-      medium: 'bg-yellow-100 text-yellow-700',
-      low: 'bg-blue-100 text-blue-700'
-    }
-    return map[severity] || 'bg-gray-100 text-gray-700'
-  }
+  const shortlistedOptions = [
+    { value: '', label: 'All Candidates' },
+    { value: 'true', label: 'Shortlisted' },
+    { value: 'false', label: 'Not Shortlisted' }
+  ]
 
-  const getStatusColor = (status) => {
-    const map = {
-      scheduled: 'bg-yellow-100 text-yellow-700',
-      in_progress: 'bg-blue-100 text-blue-700',
-      completed: 'bg-green-100 text-green-700',
-      expired: 'bg-red-100 text-red-700'
-    }
-    return map[status] || 'bg-gray-100 text-gray-700'
-  }
-
-  const violationColors = {
-    NO_FACE: 'bg-red-100 text-red-700',
-    MULTIPLE_FACE: 'bg-red-100 text-red-700',
-    MOBILE_DETECTED: 'bg-orange-100 text-orange-700',
-    LOUD_VOICE: 'bg-yellow-100 text-yellow-700',
-    MULTIPLE_VOICE: 'bg-yellow-100 text-yellow-700',
-    LIP_SYNC_MISMATCH: 'bg-purple-100 text-purple-700',
-    TAB_SWITCH: 'bg-blue-100 text-blue-700',
-    COPY_PASTE: 'bg-blue-100 text-blue-700',
-    SCREEN_SHARE: 'bg-blue-100 text-blue-700',
-    FULLSCREEN_EXIT: 'bg-blue-100 text-blue-700',
-    DARK_ENVIRONMENT: 'bg-gray-100 text-gray-700',
-    WARNING_SENT: 'bg-green-100 text-green-700',
-    SESSION_TERMINATED: 'bg-red-100 text-red-700'
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <Spinner />
-      </div>
-    )
-  }
-
-  if (!report) {
-    return (
-      <div className="text-center py-12 px-4">
-        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-lg sm:text-xl font-bold text-navy-800">Report Not Found</h2>
-        <Button className="mt-4" onClick={() => navigate('/sessions')}>Back to Sessions</Button>
-      </div>
-    )
-  }
-
-  const candidate = report.candidate
-  const sessions = report.sessions || []
-  const violations = report.violations || []
-  const answers = report.answers || []
+  const jobRoleOptions = [
+    { value: '', label: 'All Job Roles' },
+    ...thresholds.map((t) => ({ value: String(t.id), label: t.job_role_name }))
+  ]
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Candidate Report</h1>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={() => exportReport('csv')}>
-            <Download className="w-4 h-4 mr-1" />
-            CSV
+    <div>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Candidates</h1>
+        <Button onClick={() => navigate('/app/candidates/create')} className="w-full sm:w-auto justify-center">
+          <Plus className="w-4 h-4 mr-2" />
+          Add Candidate
+        </Button>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
+        <div className="flex flex-wrap gap-3">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search candidates..."
+                value={search}
+                onChange={(e) => updateFilter('search', e.target.value)}
+                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+          </div>
+          <Select
+            options={shortlistedOptions}
+            value={shortlistedFilter}
+            onChange={(e) => updateFilter('shortlisted', e.target.value)}
+            className="w-[160px] sm:w-44 flex-shrink-0"
+          />
+          <Select
+            options={jobRoleOptions}
+            value={jobRoleFilter}
+            onChange={(e) => updateFilter('jobRole', e.target.value)}
+            className="w-[160px] sm:w-48 flex-shrink-0"
+          />
+          <Button variant="outline" onClick={fetchCandidates} className="w-full sm:w-auto">
+            <RefreshCw className="w-4 h-4 mr-1" />
+            Refresh
           </Button>
-          <Button variant="outline" size="sm" onClick={() => exportReport('json')}>
-            <Download className="w-4 h-4 mr-1" />
-            JSON
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => exportReport('pdf')}>
-            <Download className="w-4 h-4 mr-1" />
-            PDF
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
+            Reset Filters
           </Button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-100 p-3 rounded-full flex-shrink-0">
-              <User className="w-6 h-6 text-blue-600" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm text-gray-500">Candidate</p>
-              <p className="font-semibold text-navy-800 truncate">{candidate.name}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="bg-gray-100 p-3 rounded-full flex-shrink-0">
-              <Mail className="w-6 h-6 text-gray-600" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm text-gray-500">Email</p>
-              <p className="font-semibold text-navy-800 truncate">{candidate.email}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="bg-purple-100 p-3 rounded-full flex-shrink-0">
-              <Briefcase className="w-6 h-6 text-purple-600" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm text-gray-500">Job Role</p>
-              <p className="font-semibold text-navy-800 truncate">{candidate.job_role || 'N/A'}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="bg-green-100 p-3 rounded-full flex-shrink-0">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm text-gray-500">ATS Score</p>
-              <p className="font-semibold text-navy-800">{candidate.ats_score || 'N/A'}%</p>
-            </div>
-          </div>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Name</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Email</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Job Role</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ATS Score</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Threshold</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Shortlisted</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-8 text-gray-500 text-sm">Loading...</td>
+                </tr>
+              ) : candidates.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-8 text-gray-500 text-sm">No candidates found</td>
+                </tr>
+              ) : (
+                candidates.map((candidate) => {
+                  const threshold = getThresholdForCandidate(candidate)
+                  const isEligible = candidate.ats_score !== null && candidate.ats_score >= threshold
+                  return (
+                    <tr key={candidate.id} className="hover:bg-gray-50">
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3 font-medium text-navy-800 whitespace-nowrap text-sm">{candidate.name}</td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{candidate.email}</td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{candidate.job_role || 'N/A'}</td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">
+                        {candidate.ats_score !== null ? (
+                          <span className={'font-medium ' + (isEligible ? 'text-green-600' : 'text-red-600')}>
+                            {candidate.ats_score}%
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">Not set</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{threshold}%</td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                        {candidate.shortlisted ? (
+                          <Badge variant="success">Yes</Badge>
+                        ) : (
+                          <Badge variant="inactive">No</Badge>
+                        )}
+                      </td>
+                      <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => navigate(`/app/candidates/${candidate.id}`)}
+                            className="p-2 -m-1 text-gray-600 hover:text-gray-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="View Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => navigate(`/app/candidates/${candidate.id}/edit`)}
+                            className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="Edit"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => openAtsModal(candidate.id, candidate.name, candidate.ats_score)}
+                            className="p-2 -m-1 text-purple-600 hover:text-purple-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="Check ATS Score"
+                          >
+                            <FileText className="w-4 h-4" />
+                          </button>
+                          {candidate.shortlisted && candidate.access_token && (
+                            <>
+                              <button
+                                onClick={() => handleCopyToken(candidate.access_token)}
+                                className="p-2 -m-1 text-green-600 hover:text-green-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title="Copy Assessment Link"
+                              >
+                                <Copy className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleResendEmail(candidate.id)}
+                                className="p-2 -m-1 text-blue-500 hover:text-blue-700 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title="Resend Email"
+                              >
+                                <Mail className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => navigate(`/app/sessions/view/${candidate.access_token}`)}
+                                className="p-2 -m-1 text-indigo-600 hover:text-indigo-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title="View Session"
+                              >
+                                <CheckCircle className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => openDeleteModal(candidate.id, candidate.name)}
+                            className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
+          Total: {total} candidates
         </div>
       </div>
-
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
-        <Button 
-          variant={activeTab === 'overview' ? 'primary' : 'outline'} 
-          size="sm"
-          onClick={() => setActiveTab('overview')}
-          className="flex-shrink-0"
-        >
-          Overview
-        </Button>
-        <Button 
-          variant={activeTab === 'answers' ? 'primary' : 'outline'} 
-          size="sm"
-          onClick={() => setActiveTab('answers')}
-          className="flex-shrink-0"
-        >
-          Answers
-        </Button>
-        <Button 
-          variant={activeTab === 'violations' ? 'primary' : 'outline'} 
-          size="sm"
-          onClick={() => setActiveTab('violations')}
-          className="flex-shrink-0"
-        >
-          Violations ({violations.length})
-        </Button>
-        <Button 
-          variant={activeTab === 'sessions' ? 'primary' : 'outline'} 
-          size="sm"
-          onClick={() => setActiveTab('sessions')}
-          className="flex-shrink-0"
-        >
-          Sessions ({sessions.length})
-        </Button>
-      </div>
-
-      {activeTab === 'overview' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-              <p className="text-xs sm:text-sm text-gray-500">Total Sessions</p>
-              <p className="text-xl sm:text-2xl font-bold text-navy-800">{sessions.length}</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-              <p className="text-xs sm:text-sm text-gray-500">Completed</p>
-              <p className="text-xl sm:text-2xl font-bold text-green-600">
-                {sessions.filter(s => s.status === 'completed').length}
-              </p>
-            </div>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-              <p className="text-xs sm:text-sm text-gray-500">Total Violations</p>
-              <p className="text-xl sm:text-2xl font-bold text-red-600">{report.violation_summary?.total || 0}</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-              <p className="text-xs sm:text-sm text-gray-500">Shortlisted</p>
-              <p className="text-xl sm:text-2xl font-bold text-blue-600">{candidate.shortlisted ? 'Yes' : 'No'}</p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
-            <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Violation Summary</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-              <div className="text-center p-3 bg-red-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-red-600">{report.violation_summary?.critical || 0}</p>
-                <p className="text-xs sm:text-sm text-gray-500">Critical</p>
-              </div>
-              <div className="text-center p-3 bg-orange-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-orange-600">{report.violation_summary?.high || 0}</p>
-                <p className="text-xs sm:text-sm text-gray-500">High</p>
-              </div>
-              <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-yellow-600">{report.violation_summary?.medium || 0}</p>
-                <p className="text-xs sm:text-sm text-gray-500">Medium</p>
-              </div>
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <p className="text-xl sm:text-2xl font-bold text-blue-600">{report.violation_summary?.low || 0}</p>
-                <p className="text-xs sm:text-sm text-gray-500">Low</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
-            <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Violation Type Distribution</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {Object.entries(violationColors).map(([type, color]) => {
-                const count = violations.filter(v => v.type === type).length
-                if (count === 0) return null
-                return (
-                  <div key={type} className={`p-3 rounded-lg ${color}`}>
-                    <p className="text-xs sm:text-sm font-medium">{type.replace('_', ' ')}</p>
-                    <p className="text-xl sm:text-2xl font-bold">{count}</p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'answers' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Answer Review</h3>
-          {answers.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No answers available</p>
-          ) : (
-            <div className="space-y-4">
-              {answers.map((answer, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                    <div>
-                      <p className="font-medium text-navy-800">Question {answer.question_id}</p>
-                      <p className="text-sm text-gray-500">Section: {answer.section_id || 'N/A'}</p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {answer.is_correct ? (
-                        <Badge variant="success">Correct</Badge>
-                      ) : (
-                        <Badge variant="danger">Incorrect</Badge>
-                      )}
-                      <span className="text-sm font-medium">
-                        Score: {answer.auto_score !== null ? `${(answer.auto_score * 100).toFixed(0)}%` : 'N/A'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-2 bg-gray-50 p-3 rounded-md overflow-x-auto">
-                    <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">
-                      Answer: {JSON.stringify(answer.answer_data)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'violations' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Violations Timeline</h3>
-          {violations.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No violations recorded</p>
-          ) : (
-            <div className="space-y-3">
-              {violations.map((violation, index) => (
-                <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 gap-2">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <AlertTriangle className={`w-5 h-5 flex-shrink-0 ${
-                      violation.severity === 'critical' ? 'text-red-500' :
-                      violation.severity === 'high' ? 'text-orange-500' :
-                      violation.severity === 'medium' ? 'text-yellow-500' :
-                      'text-blue-500'
-                    }`} />
-                    <div className="min-w-0">
-                      <p className="font-medium text-navy-800 truncate">{violation.type}</p>
-                      <p className="text-xs text-gray-500">
-                        {violation.timestamp ? new Date(violation.timestamp).toLocaleString() : 'N/A'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getSeverityColor(violation.severity)}`}>
-                      {violation.severity}
-                    </span>
-                    {violation.clip_url && (
-                      <button 
-                        onClick={() => window.open(violation.clip_url, '_blank')}
-                        className="p-1 text-blue-600 hover:text-blue-800"
-                      >
-                        <Play className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'sessions' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
-          <h3 className="font-semibold text-navy-800 mb-4 text-sm sm:text-base">Sessions History</h3>
-          {sessions.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No sessions found</p>
-          ) : (
-            <div className="space-y-4">
-              {sessions.map((session) => (
-                <div key={session.id} className="border border-gray-200 rounded-lg p-4">
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Status</p>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusColor(session.status)}`}>
-                        {session.status}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Total Score</p>
-                      <p className="font-semibold">{session.total_score || 'N/A'}%</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Integrity</p>
-                      <p className="font-semibold">{session.integrity_score || 'N/A'}%</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Eligibility</p>
-                      <Badge variant={session.eligibility === 'auto_eligible' ? 'success' : 'danger'}>
-                        {session.eligibility}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2 col-span-2 md:col-span-1">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => navigate(`/sessions/view/${session.access_token}`)}
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        View
-                      </Button>
-                      {session.status === 'completed' && session.eligibility !== 'manager_overridden' && (
-                        <Button 
-                          variant="warning" 
-                          size="sm"
-                          onClick={() => setOverrideModal({ isOpen: true, sessionId: session.id })}
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
       <Modal
-        isOpen={overrideModal.isOpen}
-        onClose={() => setOverrideModal({ isOpen: false, sessionId: null })}
-        title="Override Eligibility"
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, candidateId: null, candidateName: '' })}
+        title="Delete Candidate"
       >
         <div className="space-y-4">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-700">
-            <p className="font-medium">Override Eligibility</p>
-            <p className="text-xs mt-1">This action will override the auto-evaluation result for this session.</p>
+          <p className="text-gray-700 text-sm sm:text-base">Are you sure you want to delete <strong>{deleteModal.candidateName}</strong>?</p>
+          <p className="text-sm text-red-600">This will also delete all associated sessions and data.</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button variant="danger" onClick={() => handleDelete(deleteModal.candidateId, deleteModal.candidateName)}>
+              Delete
+            </Button>
+            <Button variant="outline" onClick={() => setDeleteModal({ isOpen: false, candidateId: null, candidateName: '' })}>
+              Cancel
+            </Button>
           </div>
+        </div>
+      </Modal>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">New Eligibility</label>
-            <Select
-              options={[
-                { value: 'manager_overridden', label: 'Manager Overridden (Shortlist)' },
-                { value: 'auto_blocked', label: 'Auto Blocked (Reject)' }
-              ]}
-              value={overrideData.eligibility}
-              onChange={(e) => setOverrideData({ ...overrideData, eligibility: e.target.value })}
-            />
+      <Modal
+        isOpen={atsModal.isOpen}
+        onClose={() => setAtsModal({ isOpen: false, candidateId: null, candidateName: '', atsScore: 70 })}
+        title="Check ATS Score"
+      >
+        <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+            <p className="font-medium">How this works:</p>
+            <ul className="mt-1 space-y-1 text-xs">
+              <li>Enter the ATS score (0-100)</li>
+              <li>System checks against threshold</li>
+              <li>If score is greater than or equal to threshold: Session created, Email sent</li>
+              <li>If score is less than threshold: Not shortlisted</li>
+            </ul>
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Override *</label>
-            <textarea
-              value={overrideData.reason}
-              onChange={(e) => setOverrideData({ ...overrideData, reason: e.target.value })}
-              placeholder="Enter the reason for overriding eligibility..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-500 min-h-[80px]"
+            <label className="block text-sm font-medium text-gray-700 mb-1">Candidate</label>
+            <p className="text-navy-800 font-medium">{atsModal.candidateName}</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">ATS Score (0-100) *</label>
+            <Input
+              type="number"
+              value={atsModal.atsScore}
+              onChange={(e) => setAtsModal({ ...atsModal, atsScore: parseInt(e.target.value) || 0 })}
+              min={0}
+              max={100}
               required
             />
           </div>
-
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              onClick={handleOverride}
-              isLoading={submitting}
-              className="flex-1"
-            >
-              Override
+            <Button onClick={handleATSCheck} isLoading={isChecking} className="flex-1">
+              Check Score
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => setOverrideModal({ isOpen: false, sessionId: null })}
-              className="flex-1"
-            >
+            <Button variant="outline" onClick={() => setAtsModal({ isOpen: false, candidateId: null, candidateName: '', atsScore: 70 })} className="flex-1">
               Cancel
             </Button>
           </div>

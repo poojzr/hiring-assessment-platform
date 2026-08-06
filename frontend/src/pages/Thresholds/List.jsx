@@ -85,7 +85,7 @@ export default function ThresholdsList() {
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800">ATS Thresholds</h1>
-        <Button onClick={() => navigate('/thresholds/create')} className="w-full sm:w-auto justify-center">
+        <Button onClick={() => navigate('/app/thresholds/create')} className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           New Threshold
         </Button>
@@ -116,57 +116,57 @@ export default function ThresholdsList() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <Table>
-          <TableHead>
-            <TableHeader>ID</TableHeader>
-            <TableHeader>Job Role</TableHeader>
-            <TableHeader>ATS Threshold</TableHeader>
-            <TableHeader>Created</TableHeader>
-            <TableHeader className="text-right">Actions</TableHeader>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : thresholds.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                  No thresholds found
-                </TableCell>
-              </TableRow>
-            ) : (
-              thresholds.map((threshold) => (
-                <TableRow key={threshold.id}>
-                  <TableCell className="font-mono text-sm text-gray-500">{threshold.id}</TableCell>
-                  <TableCell className="font-medium text-navy-800 whitespace-nowrap">{threshold.job_role_name}</TableCell>
-                  <TableCell>
-                    <Badge variant="primary">{threshold.ats_threshold}%</Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(threshold.created_at)}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => navigate(`/thresholds/${threshold.id}/edit`)}
-                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(threshold.id, threshold.job_role_name)}
-                        className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ID</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Job Role</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ATS Threshold</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Created</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-gray-500 text-sm">Loading...</td>
+                </tr>
+              ) : thresholds.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-gray-500 text-sm">No thresholds found</td>
+                </tr>
+              ) : (
+                thresholds.map((threshold) => (
+                  <tr key={threshold.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-500 font-mono whitespace-nowrap">{threshold.id}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 font-medium text-navy-800 whitespace-nowrap text-sm">{threshold.job_role_name}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                      <Badge variant="primary">{threshold.ats_threshold}%</Badge>
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-500 whitespace-nowrap">{formatDate(threshold.created_at)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-right">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          onClick={() => navigate(`/app/thresholds/${threshold.id}/edit`)}
+                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(threshold.id, threshold.job_role_name)}
+                          className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {thresholds.length} thresholds
         </div>
@@ -178,20 +178,18 @@ export default function ThresholdsList() {
         title="Delete Threshold"
       >
         <div className="space-y-4">
-          <p className="text-gray-700">
-            Are you sure you want to delete threshold for <strong>{deleteModal.thresholdName}</strong>?
-          </p>
+          <p className="text-gray-700 text-sm sm:text-base">Are you sure you want to delete threshold for <strong>{deleteModal.thresholdName}</strong>?</p>
           <p className="text-sm text-gray-500">This action cannot be undone.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => handleDelete(deleteModal.thresholdId, deleteModal.thresholdName)}
-              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
+              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors text-sm"
             >
               Delete
             </button>
             <button
               onClick={() => setDeleteModal({ isOpen: false, thresholdId: null, thresholdName: '' })}
-              className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors"
+              className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors text-sm"
             >
               Cancel
             </button>

@@ -43,7 +43,7 @@ export default function CandidateEdit() {
         })
       } catch (error) {
         toast.error('Failed to load candidate data')
-        navigate('/candidates')
+        navigate('/app/candidates')
       } finally {
         setLoading(false)
       }
@@ -73,7 +73,7 @@ export default function CandidateEdit() {
       } else {
         toast.success('Candidate updated successfully')
       }
-      navigate('/candidates')
+      navigate('/app/candidates')
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to update candidate')
     } finally {
@@ -82,7 +82,7 @@ export default function CandidateEdit() {
   }
 
   const handleCancel = () => {
-    navigate('/candidates')
+    navigate('/app/candidates')
   }
 
   const jobRoleOptions = [
@@ -102,7 +102,7 @@ export default function CandidateEdit() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto px-4 sm:px-0">
       <div className="flex items-center gap-3 sm:gap-4 mb-6">
         <button onClick={handleCancel} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />

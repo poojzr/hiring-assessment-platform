@@ -73,12 +73,12 @@ export default function Dashboard() {
   }
 
   const cards = [
-    { title: 'Total Users', value: stats.total_users, icon: Users, color: 'bg-blue-500', link: '/users' },
-    { title: 'Candidates', value: stats.total_candidates, icon: UserPlus, color: 'bg-indigo-500', link: '/candidates' },
-    { title: 'Questions', value: stats.total_questions, icon: FileQuestion, color: 'bg-green-500', link: '/questions' },
-    { title: 'Templates', value: stats.total_templates, icon: FileText, color: 'bg-purple-500', link: '/templates' },
-    { title: 'Thresholds', value: stats.total_thresholds, icon: Sliders, color: 'bg-orange-500', link: '/thresholds' },
-    { title: 'Sessions', value: stats.total_sessions, icon: Calendar, color: 'bg-teal-500', link: '/sessions' },
+    { title: 'Total Users', value: stats.total_users, icon: Users, color: 'bg-blue-500', link: '/app/users' },
+    { title: 'Candidates', value: stats.total_candidates, icon: UserPlus, color: 'bg-indigo-500', link: '/app/candidates' },
+    { title: 'Questions', value: stats.total_questions, icon: FileQuestion, color: 'bg-green-500', link: '/app/questions' },
+    { title: 'Templates', value: stats.total_templates, icon: FileText, color: 'bg-purple-500', link: '/app/templates' },
+    { title: 'Thresholds', value: stats.total_thresholds, icon: Sliders, color: 'bg-orange-500', link: '/app/thresholds' },
+    { title: 'Sessions', value: stats.total_sessions, icon: Calendar, color: 'bg-teal-500', link: '/app/sessions' },
   ]
 
   return (

@@ -133,7 +133,7 @@ export default function SessionsList() {
       toast.error('No session ID available')
       return
     }
-    navigate('/manager/recordings/' + sessionId)
+    navigate('/app/manager/recordings/' + sessionId)
   }
 
   const handleViewReport = (sessionId) => {
@@ -141,7 +141,7 @@ export default function SessionsList() {
       toast.error('No session record available')
       return
     }
-    navigate('/manager/session-report/' + sessionId)
+    navigate('/app/manager/session-report/' + sessionId)
   }
 
   const exportSessions = async (format) => {
@@ -232,11 +232,11 @@ export default function SessionsList() {
             <Download className="w-4 h-4 mr-1" />
             JSON
           </Button>
-          <Button variant="outline" onClick={() => navigate('/sessions/bulk-create')}>
+          <Button variant="outline" onClick={() => navigate('/app/sessions/bulk-create')}>
             <Users className="w-4 h-4 mr-2" />
             Bulk Create
           </Button>
-          <Button onClick={() => navigate('/sessions/create')}>
+          <Button onClick={() => navigate('/app/sessions/create')}>
             <Plus className="w-4 h-4 mr-2" />
             New Session
           </Button>
@@ -261,19 +261,19 @@ export default function SessionsList() {
             options={statusOptions}
             value={statusFilter}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="w-full sm:w-40"
+            className="w-[160px] sm:w-40 flex-shrink-0"
           />
           <Select
             options={eligibilityOptions}
             value={eligibilityFilter}
             onChange={(e) => updateFilter('eligibility', e.target.value)}
-            className="w-full sm:w-44"
+            className="w-[160px] sm:w-44 flex-shrink-0"
           />
           <Select
             options={jobRoleOptions}
             value={jobRoleFilter}
             onChange={(e) => updateFilter('jobRole', e.target.value)}
-            className="w-full sm:w-48"
+            className="w-[160px] sm:w-48 flex-shrink-0"
           />
           <Button variant="outline" onClick={fetchSessions} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-1" />
@@ -286,131 +286,133 @@ export default function SessionsList() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <Table>
-          <TableHead>
-            <TableHeader>Candidate</TableHeader>
-            <TableHeader>Job Role</TableHeader>
-            <TableHeader>Status</TableHeader>
-            <TableHeader>Reason</TableHeader>
-            <TableHeader>Eligibility</TableHeader>
-            <TableHeader>Score</TableHeader>
-            <TableHeader>Integrity</TableHeader>
-            <TableHeader>Violations</TableHeader>
-            <TableHeader>Cheating Risk</TableHeader>
-            <TableHeader>Started</TableHeader>
-            <TableHeader className="text-right">Actions</TableHeader>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={11} className="text-center py-8 text-gray-500">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : sessions.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={11} className="text-center py-8 text-gray-500">
-                  No sessions found
-                </TableCell>
-              </TableRow>
-            ) : (
-              sessions.map((session) => (
-                <TableRow key={session.session_id || session.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium text-navy-800">{session.candidate_name}</p>
-                      <p className="text-xs text-gray-500">{session.candidate_email}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell>{session.job_role}</TableCell>
-                  <TableCell>{getStatusBadge(session.status)}</TableCell>
-                  <TableCell className="text-xs text-gray-500 max-w-[160px]">
-                    {session.reason || '-'}
-                  </TableCell>
-                  <TableCell>{getEligibilityBadge(session.eligibility)}</TableCell>
-                  <TableCell>
-                    {session.total_score !== null && session.total_score !== undefined ? (
-                      <span className="font-semibold">{session.total_score}%</span>
-                    ) : (
-                      <span className="text-gray-400">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {session.integrity_score !== null && session.integrity_score !== undefined ? (
-                      <span className="font-semibold">{session.integrity_score}%</span>
-                    ) : (
-                      <span className="text-gray-400">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={session.violation_count > 0 ? 'danger' : 'success'}>
-                      {session.violation_count ?? 0}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{getCheatingRiskBadge(session.cheating_risk)}</TableCell>
-                  <TableCell className="text-sm text-gray-500">
-                    {session.started_at ? formatDate(session.started_at) : 'Not started'}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => handleViewReport(session.session_id || session.id)}
-                        className="p-2 text-indigo-600 hover:text-indigo-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                        title="View Full Report"
-                      >
-                        <FileText className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          const token = session.access_token
-                          if (token) {
-                            navigate('/sessions/view/' + token)
-                          } else {
-                            toast.error('No access token available for this session')
-                          }
-                        }}
-                        className="p-2 text-blue-600 hover:text-blue-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                        title="View Details"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleCopyToken(session.access_token || '')}
-                        className="p-2 text-gray-600 hover:text-gray-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                        title="Copy Assessment Link"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleViewRecordings(session.session_id || session.id)}
-                        className="p-2 text-purple-600 hover:text-purple-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                        title="View Recordings"
-                      >
-                        <Video className="w-4 h-4" />
-                      </button>
-                      {session.status !== 'completed' && session.status !== 'expired' && (
-                        <button
-                          onClick={() => openResendModal(session.session_id || session.id, session.candidate_name, session.candidate_email)}
-                          className="p-2 text-green-600 hover:text-green-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                          title="Resend Email"
-                        >
-                          <Mail className="w-4 h-4" />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDeleteSession(session.session_id || session.id)}
-                        className="p-2 text-red-600 hover:text-red-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
-                        title="Delete Session"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHead>
+              <TableHeader>Candidate</TableHeader>
+              <TableHeader>Job Role</TableHeader>
+              <TableHeader>Status</TableHeader>
+              <TableHeader>Reason</TableHeader>
+              <TableHeader>Eligibility</TableHeader>
+              <TableHeader>Score</TableHeader>
+              <TableHeader>Integrity</TableHeader>
+              <TableHeader>Violations</TableHeader>
+              <TableHeader>Cheating Risk</TableHeader>
+              <TableHeader>Started</TableHeader>
+              <TableHeader className="text-right">Actions</TableHeader>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={11} className="text-center py-8 text-gray-500">
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : sessions.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={11} className="text-center py-8 text-gray-500">
+                    No sessions found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                sessions.map((session) => (
+                  <TableRow key={session.session_id || session.id}>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium text-navy-800">{session.candidate_name}</p>
+                        <p className="text-xs text-gray-500">{session.candidate_email}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>{session.job_role}</TableCell>
+                    <TableCell>{getStatusBadge(session.status)}</TableCell>
+                    <TableCell className="text-xs text-gray-500 max-w-[160px]">
+                      {session.reason || '-'}
+                    </TableCell>
+                    <TableCell>{getEligibilityBadge(session.eligibility)}</TableCell>
+                    <TableCell>
+                      {session.total_score !== null && session.total_score !== undefined ? (
+                        <span className="font-semibold">{session.total_score}%</span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {session.integrity_score !== null && session.integrity_score !== undefined ? (
+                        <span className="font-semibold">{session.integrity_score}%</span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={session.violation_count > 0 ? 'danger' : 'success'}>
+                        {session.violation_count ?? 0}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{getCheatingRiskBadge(session.cheating_risk)}</TableCell>
+                    <TableCell className="text-sm text-gray-500">
+                      {session.started_at ? formatDate(session.started_at) : 'Not started'}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          onClick={() => handleViewReport(session.session_id || session.id)}
+                          className="p-2 text-indigo-600 hover:text-indigo-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          title="View Full Report"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            const token = session.access_token
+                            if (token) {
+                              navigate('/app/sessions/view/' + token)
+                            } else {
+                              toast.error('No access token available for this session')
+                            }
+                          }}
+                          className="p-2 text-blue-600 hover:text-blue-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          title="View Details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleCopyToken(session.access_token || '')}
+                          className="p-2 text-gray-600 hover:text-gray-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          title="Copy Assessment Link"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleViewRecordings(session.session_id || session.id)}
+                          className="p-2 text-purple-600 hover:text-purple-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          title="View Recordings"
+                        >
+                          <Video className="w-4 h-4" />
+                        </button>
+                        {session.status !== 'completed' && session.status !== 'expired' && (
+                          <button
+                            onClick={() => openResendModal(session.session_id || session.id, session.candidate_name, session.candidate_email)}
+                            className="p-2 text-green-600 hover:text-green-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                            title="Resend Email"
+                          >
+                            <Mail className="w-4 h-4" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteSession(session.session_id || session.id)}
+                          className="p-2 text-red-600 hover:text-red-800 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          title="Delete Session"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {total} sessions
         </div>

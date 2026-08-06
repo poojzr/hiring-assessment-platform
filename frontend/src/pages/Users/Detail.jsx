@@ -19,7 +19,7 @@ export default function UserDetail() {
         setUser(data)
       } catch (error) {
         toast.error('Failed to load user')
-        navigate('/users')
+        navigate('/app/users')
       } finally {
         setIsLoading(false)
       }
@@ -40,12 +40,12 @@ export default function UserDetail() {
   return (
     <div className="max-w-3xl px-4 sm:px-0">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <button onClick={() => navigate('/users')} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm sm:text-base">
+        <button onClick={() => navigate('/app/users')} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm sm:text-base">
           <ArrowLeft className="w-4 h-4" />
           Back to Users
         </button>
         <button
-          onClick={() => navigate(`/users/${id}/edit`)}
+          onClick={() => navigate(`/app/users/${id}/edit`)}
           className="flex items-center gap-2 text-accent-500 hover:text-accent-600 text-sm sm:text-base"
         >
           <Edit className="w-4 h-4" />

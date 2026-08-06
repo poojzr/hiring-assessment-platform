@@ -3,9 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <meta name="description" content="HireAssess - AI-powered hiring assessment & proctoring platform" />
+    <meta name="theme-color" content="#0A1628" />
+    
+    <!-- Preconnect for faster font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Load fonts with display swap (non-blocking) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <title>HireAssess - Smart Hiring Assessments with AI Proctoring</title>
+    
+    <style>
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{font-family:Inter,system-ui,sans-serif;background:#f0f2f5;color:#222a34;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+      #root{min-height:100vh}
+      .skip-to-content{position:absolute;top:-100%;left:0;padding:1rem;background:#00B894;color:#fff;z-index:9999;font-weight:600}
+      .skip-to-content:focus{top:0}
+      *:focus-visible{outline:2px solid #00B894;outline-offset:2px}
+    </style>
   </head>
   <body>
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

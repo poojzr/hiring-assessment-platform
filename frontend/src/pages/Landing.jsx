@@ -64,7 +64,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
         scrolled ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100/50' : 'bg-transparent'
       }`}>
@@ -72,40 +71,40 @@ export default function Landing() {
           <div className="flex justify-between items-center h-16 sm:h-20">
             <div className="flex items-center gap-2 cursor-pointer group" onClick={() => scrollToSection('hero')}>
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-accent-400 to-accent-600 rounded-xl flex items-center justify-center shadow-lg shadow-accent-500/30 group-hover:scale-110 transition-transform duration-300">
-                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" aria-hidden="true" />
               </div>
               <span className="text-lg sm:text-xl font-bold text-navy-800">HireAssess</span>
             </div>
 
             <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection('hero')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group">
+              <button onClick={() => scrollToSection('hero')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to home">
                 Home
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('about')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group">
+              <button onClick={() => scrollToSection('about')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to about section">
                 About
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('features')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group">
+              <button onClick={() => scrollToSection('features')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to features section">
                 Features
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('howitworks')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group">
+              <button onClick={() => scrollToSection('howitworks')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to how it works section">
                 How It Works
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('cta')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group">
+              <button onClick={() => scrollToSection('cta')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to contact section">
                 Contact
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              <Link to="/login" className="text-sm text-navy-700 hover:text-accent-500 transition-all duration-300 font-medium group">
+              <Link to="/login" className="text-sm text-navy-700 hover:text-accent-500 transition-all duration-300 font-medium group" aria-label="Sign in to your account">
                 Sign In
-                <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-accent-500"></span>
+                <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-accent-500" aria-hidden="true"></span>
               </Link>
-              <Link to="/login" className="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 shadow-lg shadow-accent-500/30 hover:shadow-accent-500/50 hover:scale-105">
+              <Link to="/login" className="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 shadow-lg shadow-accent-500/30 hover:shadow-accent-500/50 hover:scale-105" aria-label="Get started with HireAssess">
                 Get Started
               </Link>
             </div>
@@ -113,8 +112,9 @@ export default function Landing() {
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              {isMenuOpen ? <X className="w-6 h-6 text-navy-800" /> : <Menu className="w-6 h-6 text-navy-800" />}
+              {isMenuOpen ? <X className="w-6 h-6 text-navy-800" aria-hidden="true" /> : <Menu className="w-6 h-6 text-navy-800" aria-hidden="true" />}
             </button>
           </div>
 
@@ -134,14 +134,13 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* HERO SECTION */}
       <section id="hero" className="relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-accent-50/30 to-white"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-accent-50/30 to-white" aria-hidden="true"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className={`transition-all duration-1000 transform ${isVisible.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               <Badge variant="primary" className="mb-4 inline-block">
-                <Sparkles className="w-3 h-3 inline mr-1" />
+                <Sparkles className="w-3 h-3 inline mr-1" aria-hidden="true" />
                 Enterprise Assessment Platform
               </Badge>
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-navy-800 leading-tight">
@@ -157,36 +156,37 @@ export default function Landing() {
                 and advanced analytics for technical hiring.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
-                <Link to="/login">
+                <Link to="/login" aria-label="Get started with HireAssess">
                   <Button size="lg" className="group bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 shadow-lg shadow-accent-500/30 hover:shadow-accent-500/50 transition-all duration-300 hover:scale-105">
                     Get Started
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                   </Button>
                 </Link>
                 <button 
                   onClick={() => scrollToSection('features')}
                   className="px-6 py-3 border-2 border-gray-300 hover:border-accent-500 text-gray-700 hover:text-accent-500 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-accent-50"
+                  aria-label="Explore features"
                 >
                   Explore Features
                 </button>
               </div>
               <div className="mt-10 flex flex-wrap items-center gap-6">
                 <div className="flex -space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg">JD</div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg">MK</div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg">SR</div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-100 to-accent-200 border-2 border-white flex items-center justify-center text-xs font-bold text-accent-600 shadow-lg">+</div>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg" aria-hidden="true">JD</div>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg" aria-hidden="true">MK</div>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg" aria-hidden="true">SR</div>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-100 to-accent-200 border-2 border-white flex items-center justify-center text-xs font-bold text-accent-600 shadow-lg" aria-hidden="true">+</div>
                 </div>
                 <span className="text-sm text-gray-500">Join 500+ enterprises</span>
               </div>
             </div>
 
             <div className={`relative transition-all duration-1000 delay-300 transform ${isVisible.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              <div className="absolute -inset-4 bg-gradient-to-r from-accent-500/20 to-accent-600/20 rounded-3xl blur-2xl"></div>
+              <div className="absolute -inset-4 bg-gradient-to-r from-accent-500/20 to-accent-600/20 rounded-3xl blur-2xl" aria-hidden="true"></div>
               <div className="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center">
-                    <LayoutDashboard className="w-7 h-7 text-accent-600" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center" aria-hidden="true">
+                    <LayoutDashboard className="w-7 h-7 text-accent-600" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="font-semibold text-navy-800 text-lg">Platform Overview</div>
@@ -212,15 +212,15 @@ export default function Landing() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="bg-green-50 p-3 rounded-xl text-center">
-                    <CheckCircle className="w-5 h-5 text-green-600 mx-auto mb-1" />
+                    <CheckCircle className="w-5 h-5 text-green-600 mx-auto mb-1" aria-hidden="true" />
                     <span className="text-xs font-medium text-green-700">Face Detection</span>
                   </div>
                   <div className="bg-yellow-50 p-3 rounded-xl text-center">
-                    <AlertTriangle className="w-5 h-5 text-yellow-600 mx-auto mb-1" />
+                    <AlertTriangle className="w-5 h-5 text-yellow-600 mx-auto mb-1" aria-hidden="true" />
                     <span className="text-xs font-medium text-yellow-700">Tab Tracking</span>
                   </div>
                   <div className="bg-blue-50 p-3 rounded-xl text-center">
-                    <Monitor className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                    <Monitor className="w-5 h-5 text-blue-600 mx-auto mb-1" aria-hidden="true" />
                     <span className="text-xs font-medium text-blue-700">Screen Share</span>
                   </div>
                 </div>
@@ -230,7 +230,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ABOUT SECTION */}
       <section id="about" className="py-20 sm:py-28 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
@@ -246,24 +245,24 @@ export default function Landing() {
 
           <div className="grid sm:grid-cols-3 gap-8">
             <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`}>
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
-                <Shield className="w-10 h-10 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg" aria-hidden="true">
+                <Shield className="w-10 h-10 text-white" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-bold text-navy-800 mb-3">Secure Proctoring</h3>
               <p className="text-gray-500">AI-powered integrity monitoring for fair assessments</p>
             </div>
 
             <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '150ms' }}>
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
-                <Users className="w-10 h-10 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg" aria-hidden="true">
+                <Users className="w-10 h-10 text-white" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-bold text-navy-800 mb-3">Complete Management</h3>
               <p className="text-gray-500">End-to-end candidate and assessment management</p>
             </div>
 
             <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '300ms' }}>
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
-                <TrendingUp className="w-10 h-10 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg" aria-hidden="true">
+                <TrendingUp className="w-10 h-10 text-white" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-bold text-navy-800 mb-3">Data-Driven Insights</h3>
               <p className="text-gray-500">Detailed analytics for better hiring decisions</p>
@@ -272,7 +271,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* FEATURES SECTION */}
       <section id="features" className="py-20 sm:py-28 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
@@ -286,8 +284,8 @@ export default function Landing() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
               <div key={index} className={`group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-6 border border-gray-100 hover:border-accent-200 flex flex-col h-full ${isVisible.features ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 100}ms` }}>
-                <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className="w-7 h-7 text-accent-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
+                  <feature.icon className="w-7 h-7 text-accent-600" aria-hidden="true" />
                 </div>
                 <h3 className="text-xl font-bold text-navy-800 mb-3">{feature.title}</h3>
                 <p className="text-gray-500 flex-1">{feature.desc}</p>
@@ -297,7 +295,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* HOW IT WORKS SECTION */}
       <section id="howitworks" className="py-20 sm:py-28 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.howitworks ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
@@ -316,7 +313,7 @@ export default function Landing() {
               { step: '04', title: 'Evaluate & Hire', desc: 'Review reports and shortlist the best candidates' },
             ].map((item, index) => (
               <div key={index} className={`bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-8 border border-gray-100 flex flex-col h-full ${isVisible.howitworks ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 150}ms` }}>
-                <div className="text-5xl font-bold text-accent-500 mb-4">
+                <div className="text-5xl font-bold text-accent-500 mb-4" aria-hidden="true">
                   {item.step}
                 </div>
                 <h3 className="text-xl font-bold text-navy-800 mb-3">{item.title}</h3>
@@ -327,7 +324,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* PROCTORING SECTION */}
       <section id="proctoring" className="py-20 sm:py-28 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.proctoring ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
@@ -341,8 +337,8 @@ export default function Landing() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {proctoringFeatures.map((feature, index) => (
               <div key={index} className={`group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 p-6 border border-gray-100 hover:border-accent-200 flex items-start gap-5 ${isVisible.proctoring ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 80}ms` }}>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className="w-6 h-6 text-accent-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
+                  <feature.icon className="w-6 h-6 text-accent-600" aria-hidden="true" />
                 </div>
                 <div>
                   <h4 className="font-bold text-navy-800 text-base">{feature.title}</h4>
@@ -354,10 +350,9 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA SECTION */}
       <section id="cta" className="py-20 sm:py-28 px-4 bg-navy-900 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent-500/10 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-gradient-to-r from-accent-500/10 to-transparent"></div>
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent-500/10 to-transparent" aria-hidden="true"></div>
+        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-gradient-to-r from-accent-500/10 to-transparent" aria-hidden="true"></div>
         <div className={`max-w-4xl mx-auto text-center relative z-10 transition-all duration-700 transform ${isVisible.cta ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">
             Ready to Transform Your Hiring Process?
@@ -366,13 +361,13 @@ export default function Landing() {
             Start conducting secure, proctored technical assessments today
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/login">
+            <Link to="/login" aria-label="Get started with HireAssess">
               <Button size="lg" className="group bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 shadow-lg shadow-accent-500/30 hover:shadow-accent-500/50 transition-all duration-300 hover:scale-105 text-white">
                 Get Started
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </Button>
             </Link>
-            <Link to="/login">
+            <Link to="/login" aria-label="Sign in to your account">
               <button className="px-6 py-3 border-2 border-gray-600 hover:border-accent-500 text-gray-300 hover:text-white rounded-lg text-sm font-medium transition-all duration-300 hover:bg-accent-500/10">
                 Sign In
               </button>
@@ -381,14 +376,13 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="bg-navy-950 text-gray-400 py-16 sm:py-20 px-4 border-t border-gray-800/50">
         <div className="max-w-7xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-400 to-accent-600 rounded-xl flex items-center justify-center shadow-lg shadow-accent-500/30">
-                  <Zap className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 bg-gradient-to-br from-accent-400 to-accent-600 rounded-xl flex items-center justify-center shadow-lg shadow-accent-500/30" aria-hidden="true">
+                  <Zap className="w-5 h-5 text-white" aria-hidden="true" />
                 </div>
                 <span className="text-xl font-bold text-white">HireAssess</span>
               </div>
@@ -396,17 +390,17 @@ export default function Landing() {
                 Complete hiring assessment platform with AI proctoring for modern enterprises.
               </p>
               <div className="flex gap-4 mt-6">
-                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110">
-                  <Twitter className="w-5 h-5" />
+                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110" aria-label="Twitter">
+                  <Twitter className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110">
-                  <Linkedin className="w-5 h-5" />
+                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110" aria-label="LinkedIn">
+                  <Linkedin className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110">
-                  <Github className="w-5 h-5" />
+                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110" aria-label="GitHub">
+                  <Github className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110">
-                  <Youtube className="w-5 h-5" />
+                <a href="#" className="text-gray-500 hover:text-accent-500 transition-all duration-300 hover:scale-110" aria-label="YouTube">
+                  <Youtube className="w-5 h-5" aria-hidden="true" />
                 </a>
               </div>
             </div>
@@ -435,11 +429,11 @@ export default function Landing() {
               <h4 className="text-white font-semibold mb-4 text-sm">Contact</h4>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-gray-500" />
+                  <Mail className="w-4 h-4 text-gray-500" aria-hidden="true" />
                   <span>support@hireassess.com</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-gray-500" />
+                  <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />
                   <span>+1 (555) 123-4567</span>
                 </li>
                 <li className="text-gray-500 text-xs mt-2">Mon-Fri: 9:00 AM - 6:00 PM</li>

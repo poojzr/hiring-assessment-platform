@@ -346,28 +346,28 @@ export default function Recordings() {
           <table className="w-full min-w-[720px]">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Session ID</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Candidate</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Status</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Total Chunks</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Duration</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Uploaded</th>
-                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm font-medium text-gray-500 whitespace-nowrap">Actions</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Session ID</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Candidate</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Total Chunks</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Duration</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Uploaded</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {recordings.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500 text-sm">
+                  <td colSpan={7} className="text-center py-8 text-gray-500 text-sm">
                     No recordings found. Start an assessment to create recordings.
                   </td>
                 </tr>
               ) : (
                 recordings.map((recording) => (
                   <tr key={recording.session_id} className="hover:bg-gray-50">
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-mono">{recording.session_id}</td>
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{recording.candidate_name || 'Unknown'}</td>
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm font-mono">{recording.session_id}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-600 whitespace-nowrap">{recording.candidate_name || 'Unknown'}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                         recording.status === 'completed' ? 'bg-green-100 text-green-700' : 
                         recording.status === 'in_progress' ? 'bg-yellow-100 text-yellow-700' :
@@ -376,9 +376,9 @@ export default function Recordings() {
                         {recording.status || 'unknown'}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600">{recording.total_chunks || 0}</td>
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{formatDuration(recording.total_duration)}</td>
-                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-500 whitespace-nowrap">{formatDate(recording.uploaded_at)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-600">{recording.total_chunks || 0}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-600 whitespace-nowrap">{formatDuration(recording.total_duration)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-500 whitespace-nowrap">{formatDate(recording.uploaded_at)}</td>
                     <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm">
                       <div className="flex gap-1">
                         <button

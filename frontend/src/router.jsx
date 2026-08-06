@@ -1,43 +1,52 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminLayout from './layouts/AdminLayout'
 import Login from './pages/Login'
-import ForgotPassword from './pages/ForgotPassword'
-import ResetPassword from './pages/ResetPassword'
-import Dashboard from './pages/Dashboard'
 import Landing from './pages/Landing'
-import UsersList from './pages/Users/List'
-import UserForm from './pages/Users/Form'
-import UserDetail from './pages/Users/Detail'
-import QuestionsList from './pages/Questions/List'
-import QuestionForm from './pages/Questions/Form'
-import QuestionDetail from './pages/Questions/Detail'
-import BulkImport from './pages/Questions/BulkImport'
-import TemplatesList from './pages/Templates/List'
-import TemplateForm from './pages/Templates/Form'
-import TemplateDetail from './pages/Templates/Detail'
-import TemplateHistory from './pages/Templates/History'
-import ThresholdsList from './pages/Thresholds/List'
-import ThresholdForm from './pages/Thresholds/Form'
-import SessionsList from './pages/Sessions/List'
-import SessionCreate from './pages/Sessions/Create'
-import SessionViewByToken from './pages/Sessions/ViewBytoken'
-import BulkSessionCreate from './pages/Sessions/BulkCreate'
-import CandidatesList from './pages/Candidates/List'
-import CandidateCreate from './pages/Candidates/Create'
-import CandidateEdit from './pages/Candidates/Edit'
-import CandidateDetail from './pages/Candidates/Detail'
-import AssessmentVerify from './pages/Assessment/Verify'
-import AssessmentTake from './pages/Assessment/Take'
-import AssessmentSubmit from './pages/Assessment/Submit'
-import AssessmentThankYou from './pages/Assessment/Thankyou'
-import ManagerDashboard from './pages/Manager/Dashboard'
-import LiveMonitoring from './pages/Manager/LiveMonitoring'
-import CandidateReport from './pages/Manager/CandidateReport'
-import EligibleShortlist from './pages/Manager/EligibleShortlist'
-import SessionReport from './pages/Manager/SessionReport'
-import Analytics from './pages/Manager/Analytics'
-import Recordings from './pages/Manager/Recordings'
+import LoadingSpinner from './components/ui/LoadingSpinner'
+
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const UsersList = lazy(() => import('./pages/Users/List'))
+const UserForm = lazy(() => import('./pages/Users/Form'))
+const UserDetail = lazy(() => import('./pages/Users/Detail'))
+const QuestionsList = lazy(() => import('./pages/Questions/List'))
+const QuestionForm = lazy(() => import('./pages/Questions/Form'))
+const QuestionDetail = lazy(() => import('./pages/Questions/Detail'))
+const BulkImport = lazy(() => import('./pages/Questions/BulkImport'))
+const TemplatesList = lazy(() => import('./pages/Templates/List'))
+const TemplateForm = lazy(() => import('./pages/Templates/Form'))
+const TemplateDetail = lazy(() => import('./pages/Templates/Detail'))
+const TemplateHistory = lazy(() => import('./pages/Templates/History'))
+const ThresholdsList = lazy(() => import('./pages/Thresholds/List'))
+const ThresholdForm = lazy(() => import('./pages/Thresholds/Form'))
+const SessionsList = lazy(() => import('./pages/Sessions/List'))
+const SessionCreate = lazy(() => import('./pages/Sessions/Create'))
+const SessionViewByToken = lazy(() => import('./pages/Sessions/ViewBytoken'))
+const BulkSessionCreate = lazy(() => import('./pages/Sessions/BulkCreate'))
+const CandidatesList = lazy(() => import('./pages/Candidates/List'))
+const CandidateCreate = lazy(() => import('./pages/Candidates/Create'))
+const CandidateEdit = lazy(() => import('./pages/Candidates/Edit'))
+const CandidateDetail = lazy(() => import('./pages/Candidates/Detail'))
+const AssessmentVerify = lazy(() => import('./pages/Assessment/Verify'))
+const AssessmentTake = lazy(() => import('./pages/Assessment/Take'))
+const AssessmentSubmit = lazy(() => import('./pages/Assessment/Submit'))
+const AssessmentThankYou = lazy(() => import('./pages/Assessment/Thankyou'))
+const ManagerDashboard = lazy(() => import('./pages/Manager/Dashboard'))
+const LiveMonitoring = lazy(() => import('./pages/Manager/LiveMonitoring'))
+const CandidateReport = lazy(() => import('./pages/Manager/CandidateReport'))
+const EligibleShortlist = lazy(() => import('./pages/Manager/EligibleShortlist'))
+const SessionReport = lazy(() => import('./pages/Manager/SessionReport'))
+const Analytics = lazy(() => import('./pages/Manager/Analytics'))
+const Recordings = lazy(() => import('./pages/Manager/Recordings'))
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
+
+const withSuspense = (Component) => (
+  <Suspense fallback={<LoadingSpinner />}>
+    {Component}
+  </Suspense>
+)
 
 const router = createBrowserRouter([
   {
@@ -50,29 +59,166 @@ const router = createBrowserRouter([
   },
   {
     path: '/forgot-password',
-    element: <ForgotPassword />,
+    element: withSuspense(<ForgotPassword />),
   },
   {
     path: '/reset-password',
-    element: <ResetPassword />,
+    element: withSuspense(<ResetPassword />),
   },
   {
     path: '/assessment/:accessToken',
-    element: <AssessmentVerify />,
+    element: withSuspense(<AssessmentVerify />),
   },
   {
     path: '/assessment/:accessToken/take',
-    element: <AssessmentTake />,
+    element: withSuspense(<AssessmentTake />),
   },
   {
     path: '/assessment/:accessToken/submit',
-    element: <AssessmentSubmit />,
+    element: withSuspense(<AssessmentSubmit />),
   },
   {
     path: '/assessment/:accessToken/thankyou',
-    element: <AssessmentThankYou />,
+    element: withSuspense(<AssessmentThankYou />),
   },
   {
+    path: '/dashboard',
+    element: <Navigate to="/app/dashboard" replace />,
+  },
+  {
+    path: '/users',
+    element: <Navigate to="/app/users" replace />,
+  },
+  {
+    path: '/users/create',
+    element: <Navigate to="/app/users/create" replace />,
+  },
+  {
+    path: '/users/:id',
+    element: <Navigate to="/app/users/:id" replace />,
+  },
+  {
+    path: '/users/:id/edit',
+    element: <Navigate to="/app/users/:id/edit" replace />,
+  },
+  {
+    path: '/questions',
+    element: <Navigate to="/app/questions" replace />,
+  },
+  {
+    path: '/questions/create',
+    element: <Navigate to="/app/questions/create" replace />,
+  },
+  {
+    path: '/questions/:id',
+    element: <Navigate to="/app/questions/:id" replace />,
+  },
+  {
+    path: '/questions/:id/edit',
+    element: <Navigate to="/app/questions/:id/edit" replace />,
+  },
+  {
+    path: '/questions/bulk-import',
+    element: <Navigate to="/app/questions/bulk-import" replace />,
+  },
+  {
+    path: '/templates',
+    element: <Navigate to="/app/templates" replace />,
+  },
+  {
+    path: '/templates/create',
+    element: <Navigate to="/app/templates/create" replace />,
+  },
+  {
+    path: '/templates/:id',
+    element: <Navigate to="/app/templates/:id" replace />,
+  },
+  {
+    path: '/templates/:id/edit',
+    element: <Navigate to="/app/templates/:id/edit" replace />,
+  },
+  {
+    path: '/templates/:id/history',
+    element: <Navigate to="/app/templates/:id/history" replace />,
+  },
+  {
+    path: '/thresholds',
+    element: <Navigate to="/app/thresholds" replace />,
+  },
+  {
+    path: '/thresholds/create',
+    element: <Navigate to="/app/thresholds/create" replace />,
+  },
+  {
+    path: '/thresholds/:id/edit',
+    element: <Navigate to="/app/thresholds/:id/edit" replace />,
+  },
+  {
+    path: '/sessions',
+    element: <Navigate to="/app/sessions" replace />,
+  },
+  {
+    path: '/sessions/create',
+    element: <Navigate to="/app/sessions/create" replace />,
+  },
+  {
+    path: '/sessions/bulk-create',
+    element: <Navigate to="/app/sessions/bulk-create" replace />,
+  },
+  {
+    path: '/sessions/view/:accessToken',
+    element: <Navigate to="/app/sessions/view/:accessToken" replace />,
+  },
+  {
+    path: '/candidates',
+    element: <Navigate to="/app/candidates" replace />,
+  },
+  {
+    path: '/candidates/create',
+    element: <Navigate to="/app/candidates/create" replace />,
+  },
+  {
+    path: '/candidates/:id',
+    element: <Navigate to="/app/candidates/:id" replace />,
+  },
+  {
+    path: '/candidates/:id/edit',
+    element: <Navigate to="/app/candidates/:id/edit" replace />,
+  },
+  {
+    path: '/manager/dashboard',
+    element: <Navigate to="/app/manager/dashboard" replace />,
+  },
+  {
+    path: '/manager/live',
+    element: <Navigate to="/app/manager/live" replace />,
+  },
+  {
+    path: '/manager/report/:candidateId',
+    element: <Navigate to="/app/manager/report/:candidateId" replace />,
+  },
+  {
+    path: '/manager/eligible-shortlist',
+    element: <Navigate to="/app/manager/eligible-shortlist" replace />,
+  },
+  {
+    path: '/manager/session-report/:sessionId',
+    element: <Navigate to="/app/manager/session-report/:sessionId" replace />,
+  },
+  {
+    path: '/manager/analytics',
+    element: <Navigate to="/app/manager/analytics" replace />,
+  },
+  {
+    path: '/manager/recordings',
+    element: <Navigate to="/app/manager/recordings" replace />,
+  },
+  {
+    path: '/manager/recordings/:sessionId',
+    element: <Navigate to="/app/manager/recordings/:sessionId" replace />,
+  },
+  {
+    path: '/app',
     element: <ProtectedRoute />,
     children: [
       {
@@ -80,148 +226,152 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Navigate to="/dashboard" replace />,
+            element: <Navigate to="/app/dashboard" replace />,
           },
           {
-            path: '/dashboard',
-            element: <Dashboard />,
+            path: '/app/dashboard',
+            element: withSuspense(<Dashboard />),
           },
           {
-            path: '/users',
-            element: <UsersList />,
+            path: '/app/users',
+            element: withSuspense(<UsersList />),
           },
           {
-            path: '/users/create',
-            element: <UserForm />,
+            path: '/app/users/create',
+            element: withSuspense(<UserForm />),
           },
           {
-            path: '/users/:id/edit',
-            element: <UserForm />,
+            path: '/app/users/:id/edit',
+            element: withSuspense(<UserForm />),
           },
           {
-            path: '/users/:id',
-            element: <UserDetail />,
+            path: '/app/users/:id',
+            element: withSuspense(<UserDetail />),
           },
           {
-            path: '/questions',
-            element: <QuestionsList />,
+            path: '/app/questions',
+            element: withSuspense(<QuestionsList />),
           },
           {
-            path: '/questions/create',
-            element: <QuestionForm />,
+            path: '/app/questions/create',
+            element: withSuspense(<QuestionForm />),
           },
           {
-            path: '/questions/:id/edit',
-            element: <QuestionForm />,
+            path: '/app/questions/:id/edit',
+            element: withSuspense(<QuestionForm />),
           },
           {
-            path: '/questions/:id',
-            element: <QuestionDetail />,
+            path: '/app/questions/:id',
+            element: withSuspense(<QuestionDetail />),
           },
           {
-            path: '/questions/bulk-import',
-            element: <BulkImport />,
+            path: '/app/questions/bulk-import',
+            element: withSuspense(<BulkImport />),
           },
           {
-            path: '/templates',
-            element: <TemplatesList />,
+            path: '/app/templates',
+            element: withSuspense(<TemplatesList />),
           },
           {
-            path: '/templates/create',
-            element: <TemplateForm />,
+            path: '/app/templates/create',
+            element: withSuspense(<TemplateForm />),
           },
           {
-            path: '/templates/:id',
-            element: <TemplateDetail />,
+            path: '/app/templates/:id',
+            element: withSuspense(<TemplateDetail />),
           },
           {
-            path: '/templates/:id/edit',
-            element: <TemplateForm />,
+            path: '/app/templates/:id/edit',
+            element: withSuspense(<TemplateForm />),
           },
           {
-            path: '/templates/:id/history',
-            element: <TemplateHistory />,
+            path: '/app/templates/:id/history',
+            element: withSuspense(<TemplateHistory />),
           },
           {
-            path: '/thresholds',
-            element: <ThresholdsList />,
+            path: '/app/thresholds',
+            element: withSuspense(<ThresholdsList />),
           },
           {
-            path: '/thresholds/create',
-            element: <ThresholdForm />,
+            path: '/app/thresholds/create',
+            element: withSuspense(<ThresholdForm />),
           },
           {
-            path: '/thresholds/:id/edit',
-            element: <ThresholdForm />,
+            path: '/app/thresholds/:id/edit',
+            element: withSuspense(<ThresholdForm />),
           },
           {
-            path: '/sessions',
-            element: <SessionsList />,
+            path: '/app/sessions',
+            element: withSuspense(<SessionsList />),
           },
           {
-            path: '/sessions/create',
-            element: <SessionCreate />,
+            path: '/app/sessions/create',
+            element: withSuspense(<SessionCreate />),
           },
           {
-            path: '/sessions/bulk-create',
-            element: <BulkSessionCreate />,
+            path: '/app/sessions/bulk-create',
+            element: withSuspense(<BulkSessionCreate />),
           },
           {
-            path: '/sessions/view/:accessToken',
-            element: <SessionViewByToken />,
+            path: '/app/sessions/view/:accessToken',
+            element: withSuspense(<SessionViewByToken />),
           },
           {
-            path: '/candidates',
-            element: <CandidatesList />,
+            path: '/app/candidates',
+            element: withSuspense(<CandidatesList />),
           },
           {
-            path: '/candidates/create',
-            element: <CandidateCreate />,
+            path: '/app/candidates/create',
+            element: withSuspense(<CandidateCreate />),
           },
           {
-            path: '/candidates/:id/edit',
-            element: <CandidateEdit />,
+            path: '/app/candidates/:id/edit',
+            element: withSuspense(<CandidateEdit />),
           },
           {
-            path: '/candidates/:id',
-            element: <CandidateDetail />,
+            path: '/app/candidates/:id',
+            element: withSuspense(<CandidateDetail />),
           },
           {
-            path: '/manager/dashboard',
-            element: <ManagerDashboard />,
+            path: '/app/manager/dashboard',
+            element: withSuspense(<ManagerDashboard />),
           },
           {
-            path: '/manager/live',
-            element: <LiveMonitoring />,
+            path: '/app/manager/live',
+            element: withSuspense(<LiveMonitoring />),
           },
           {
-            path: '/manager/report/:candidateId',
-            element: <CandidateReport />,
+            path: '/app/manager/report/:candidateId',
+            element: withSuspense(<CandidateReport />),
           },
           {
-            path: '/manager/eligible-shortlist',
-            element: <EligibleShortlist />,
+            path: '/app/manager/eligible-shortlist',
+            element: withSuspense(<EligibleShortlist />),
           },
           {
-            path: '/manager/session-report/:sessionId',
-            element: <SessionReport />,
+            path: '/app/manager/session-report/:sessionId',
+            element: withSuspense(<SessionReport />),
           },
           {
-            path: '/manager/analytics',
-            element: <Analytics />,
+            path: '/app/manager/analytics',
+            element: withSuspense(<Analytics />),
           },
           {
-            path: '/manager/recordings',
-            element: <Recordings />,
+            path: '/app/manager/recordings',
+            element: withSuspense(<Recordings />),
           },
           {
-            path: '/manager/recordings/:sessionId',
-            element: <Recordings />,
+            path: '/app/manager/recordings/:sessionId',
+            element: withSuspense(<Recordings />),
           },
         ],
       },
     ],
   },
-])
+], {
+  future: {
+    v7_startTransition: true,
+  },
+})
 
 export default router

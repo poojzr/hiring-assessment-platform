@@ -174,10 +174,9 @@ export default function TemplateForm() {
         await createTemplate(payload)
         toast.success('Template created successfully')
       }
-      navigate('/templates')
+      navigate('/app/templates')
     } catch (error) {
       console.error('Template save error:', error)
-      console.log('Request payload:', payload)
       
       if (error.response?.status === 422) {
         const errors = error.response?.data?.detail
@@ -285,7 +284,7 @@ export default function TemplateForm() {
             <button
               type="button"
               onClick={addSection}
-              className="bg-accent-500 hover:bg-accent-600 text-white px-3 py-1 rounded-md text-sm flex items-center gap-1 justify-center"
+              className="bg-accent-500 hover:bg-accent-600 text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
             >
               <Plus className="w-4 h-4" /> Add Section
             </button>
@@ -302,13 +301,13 @@ export default function TemplateForm() {
                     <button
                       type="button"
                       onClick={() => removeSection(index)}
-                      className="p-1 text-red-600 hover:text-red-800 flex-shrink-0 self-end sm:self-auto"
+                      className="p-1 text-red-600 hover:text-red-800 flex-shrink-0"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Section ID</label>
                       <input
@@ -316,7 +315,7 @@ export default function TemplateForm() {
                         value={section.id}
                         onChange={(e) => updateSection(index, 'id', e.target.value)}
                         placeholder="section_1"
-                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -324,7 +323,7 @@ export default function TemplateForm() {
                       <select
                         value={section.type}
                         onChange={(e) => updateSection(index, 'type', e.target.value)}
-                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       >
                         <option value="MCQ">MCQ</option>
                         <option value="CODING">Coding</option>
@@ -337,7 +336,7 @@ export default function TemplateForm() {
                         value={section.count}
                         onChange={(e) => updateSection(index, 'count', e.target.value)}
                         min="1"
-                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -347,7 +346,7 @@ export default function TemplateForm() {
                         value={section.duration_minutes}
                         onChange={(e) => updateSection(index, 'duration_minutes', e.target.value)}
                         min="1"
-                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -357,7 +356,7 @@ export default function TemplateForm() {
                         value={section.order}
                         onChange={(e) => updateSection(index, 'order', e.target.value)}
                         min="1"
-                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                     <div>
@@ -368,7 +367,7 @@ export default function TemplateForm() {
                         onChange={(e) => updateSection(index, 'weight', e.target.value)}
                         min="0"
                         step="0.1"
-                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                       />
                     </div>
                   </div>
@@ -380,7 +379,7 @@ export default function TemplateForm() {
                       value={section.topic || ''}
                       onChange={(e) => updateSection(index, 'topic', e.target.value)}
                       placeholder="e.g., Python Basics, Algorithms"
-                      className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                      className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                     />
                     <p className="text-xs text-gray-400 mt-1">Leave empty to select from all topics</p>
                   </div>
@@ -402,7 +401,7 @@ export default function TemplateForm() {
                             min="0"
                             max="1"
                             step="0.1"
-                            className="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                            className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                           />
                         </div>
                       ))}

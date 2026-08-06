@@ -56,6 +56,7 @@ export default function SessionCreate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
     if (!formData.candidate_id) {
       toast.error('Please select a candidate')
       return
@@ -80,17 +81,28 @@ export default function SessionCreate() {
       if (result.access_token) {
         toast.success('Access Token: ' + result.access_token.slice(0, 12) + '...')
       }
-      navigate('/sessions')
+      navigate('/app/sessions')
     } catch (error) {
+      const status = error.response?.status
       const message = error.response?.data?.detail || 'Failed to create session'
-      toast.error(message)
+      
+      if (status === 400) {
+        if (typeof message === 'object') {
+          const errors = Object.values(message).flat().join(', ')
+          toast.error('Validation error: ' + errors)
+        } else {
+          toast.error(message)
+        }
+      } else {
+        toast.error(message)
+      }
     } finally {
       setSubmitting(false)
     }
   }
 
   const handleCancel = () => {
-    navigate('/sessions')
+    navigate('/app/sessions')
   }
 
   const candidateOptions = [

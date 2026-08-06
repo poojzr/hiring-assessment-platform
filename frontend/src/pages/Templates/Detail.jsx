@@ -43,17 +43,17 @@ export default function TemplateDetail() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-0">
       <div className="flex items-center gap-3 sm:gap-4 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
+        <button onClick={() => navigate('/app/templates')} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800 break-words">{template.name}</h1>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
-        <Link to={`/templates/${template.id}/edit`} className="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md flex items-center gap-1 text-sm sm:text-base">
+        <Link to={`/app/templates/${template.id}/edit`} className="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-md flex items-center gap-1 text-sm sm:text-base">
           <Edit className="w-4 h-4" /> Edit
         </Link>
-        <Link to={`/templates/${template.id}/history`} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center gap-1 text-sm sm:text-base">
+        <Link to={`/app/templates/${template.id}/history`} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center gap-1 text-sm sm:text-base">
           <History className="w-4 h-4" /> History
         </Link>
       </div>

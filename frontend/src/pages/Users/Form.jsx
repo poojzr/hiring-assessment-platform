@@ -81,7 +81,7 @@ export default function UserForm() {
         await createUser(payload)
         toast.success('User created successfully')
       }
-      navigate('/users')
+      navigate('/app/users')
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to save user')
     } finally {

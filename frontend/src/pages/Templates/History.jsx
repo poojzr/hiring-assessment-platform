@@ -38,7 +38,7 @@ export default function TemplateHistory() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-0">
       <div className="flex items-center gap-3 sm:gap-4 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
+        <button onClick={() => navigate('/app/templates')} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Template History</h1>

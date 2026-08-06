@@ -64,7 +64,7 @@ export default function CandidateCreate() {
     try {
       await createCandidate(payload)
       toast.success('Candidate created successfully')
-      navigate('/candidates')
+      navigate('/app/candidates')
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to create candidate')
     } finally {
@@ -89,7 +89,7 @@ export default function CandidateCreate() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto px-4 sm:px-0">
       <div className="flex items-center gap-3 sm:gap-4 mb-6">
         <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />

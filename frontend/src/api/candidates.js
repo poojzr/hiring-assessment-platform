@@ -21,7 +21,7 @@ export const updateCandidate = async (id, data) => {
 }
 
 export const deleteCandidate = async (id) => {
-  const response = await client.delete(`/candidates/${id}`)
+  const response = await client.delete(`/candidates/${id}/permanent`)
   return response.data
 }
 

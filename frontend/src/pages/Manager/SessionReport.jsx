@@ -129,7 +129,7 @@ export default function SessionReport() {
       <div className="text-center py-12 px-4">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
         <h2 className="text-lg sm:text-xl font-bold text-navy-800">Report Not Found</h2>
-        <Button className="mt-4" onClick={() => navigate('/sessions')}>Back to Sessions</Button>
+        <Button className="mt-4" onClick={() => navigate('/app/sessions')}>Back to Sessions</Button>
       </div>
     )
   }
@@ -140,7 +140,7 @@ export default function SessionReport() {
   const answers = report.answers || []
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 sm:px-0">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">

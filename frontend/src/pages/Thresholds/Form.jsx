@@ -63,7 +63,7 @@ export default function ThresholdForm() {
         await createThreshold(payload)
         toast.success('Threshold created successfully')
       }
-      navigate('/thresholds')
+      navigate('/app/thresholds')
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to save threshold')
     } finally {

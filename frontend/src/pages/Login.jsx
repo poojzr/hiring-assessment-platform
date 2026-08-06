@@ -20,11 +20,11 @@ export default function Login() {
     try {
       const user = await login(email, password)
       if (user.role === 'admin') {
-        navigate('/dashboard')
+        navigate('/app/dashboard')
       } else if (user.role === 'manager') {
-        navigate('/manager/dashboard')
+        navigate('/app/manager/dashboard')
       } else {
-        navigate('/')
+        navigate('/app/dashboard')
       }
     } catch (err) {
       const message = err.response?.data?.detail || 'Invalid email or password'

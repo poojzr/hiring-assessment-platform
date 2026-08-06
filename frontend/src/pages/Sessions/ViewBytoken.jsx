@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Copy, Mail, User, FileText, Clock, Shield, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getSessionByToken, resendSessionEmail } from '../../api/sessions'
+import { getSessionByToken } from '../../api/sessions'
 import { formatDate } from '../../utils/helpers'
 import Button from '../../components/ui/Button'
 import Badge from '../../components/ui/Badge'
@@ -13,7 +13,6 @@ export default function SessionViewByToken() {
   const navigate = useNavigate()
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [resending, setResending] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -49,21 +48,8 @@ export default function SessionViewByToken() {
     }
   }
 
-  const handleResendEmail = async () => {
-    if (!session?.session_id) return
-    setResending(true)
-    try {
-      await resendSessionEmail(session.session_id)
-      toast.success('Assessment email resent successfully')
-    } catch (error) {
-      toast.error('Failed to resend email')
-    } finally {
-      setResending(false)
-    }
-  }
-
   const handleCancel = () => {
-    navigate('/sessions')
+    navigate('/app/sessions')
   }
 
   const getStatusBadge = (status) => {
@@ -130,16 +116,6 @@ export default function SessionViewByToken() {
                 <Copy className="w-4 h-4" />
               </button>
             </div>
-          </div>
-          <div className="flex gap-2 flex-shrink-0">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResendEmail}
-              isLoading={resending}
-            >
-              <Mail className="w-4 h-4 mr-1" /> Resend Email
-            </Button>
           </div>
         </div>
       </div>

@@ -27,17 +27,22 @@ export default function LiveMonitoring() {
   const mountedRef = useRef(true)
   const warningToastRef = useRef(null)
   const terminateToastRef = useRef(null)
+  const selectedSessionRef = useRef(null)
 
   const token = sessionStorage.getItem('access_token')
   const wsBase = import.meta.env.VITE_WS_URL 
   const wsUrl = `${wsBase}/api/proctor/manager/live?token=${token}`
     
+  useEffect(() => {
+    selectedSessionRef.current = selectedSession
+  }, [selectedSession])
+
   const { isConnected, send, lastMessage, reconnect, error, close } = useWebSocket(wsUrl, {
     onOpen: () => {
       console.log('Manager WebSocket connected')
       toast.success('Connected to live monitoring')
-      if (selectedSession && mountedRef.current) {
-        subscribeToSession(selectedSession.session_id)
+      if (selectedSessionRef.current && mountedRef.current) {
+        subscribeToSession(selectedSessionRef.current.session_id)
       }
     },
     onClose: () => {
@@ -48,7 +53,9 @@ export default function LiveMonitoring() {
       if (!mountedRef.current) return
       console.log('Manager WebSocket message:', data)
       
-      if (data.type === 'frame' && selectedSession && data.session_id === selectedSession.session_id) {
+      const currentSession = selectedSessionRef.current
+      
+      if (data.type === 'frame' && currentSession && data.session_id === currentSession.session_id) {
         frameCountRef.current += 1
         if (videoRef.current) {
           videoRef.current.src = 'data:image/jpeg;base64,' + data.data
@@ -56,7 +63,7 @@ export default function LiveMonitoring() {
       }
       
       if (data.type === 'violation') {
-        if (data.session_id === selectedSession?.session_id) {
+        if (data.session_id === currentSession?.session_id) {
           setViolations(prev => [...prev, {
             type: data.event || data.violation_type || 'UNKNOWN',
             severity: data.severity || 'medium',
@@ -84,7 +91,7 @@ export default function LiveMonitoring() {
 
       if (data.type === 'candidate_offline') {
         toast.error('Candidate disconnected')
-        if (selectedSession?.session_id === data.session_id) {
+        if (currentSession?.session_id === data.session_id) {
           setSelectedSession(null)
           setViolations([])
           if (videoRef.current) {
@@ -100,7 +107,7 @@ export default function LiveMonitoring() {
           terminateToastRef.current = null
         }
         toast.success('Session terminated successfully')
-        if (selectedSession?.session_id === data.session_id) {
+        if (currentSession?.session_id === data.session_id) {
           setSelectedSession(null)
           setViolations([])
           if (videoRef.current) {

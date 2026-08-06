@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Plus, Edit, UserX, UserMinus, Search, RotateCcw } from 'lucide-react'
+import { Plus, Edit, UserX, UserMinus, Search, RotateCcw, Eye } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { getUsers, deleteUser } from '../../api/users'
 import { formatDate } from '../../utils/helpers'
@@ -127,14 +127,14 @@ export default function UsersList() {
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Users</h1>
-        <Button onClick={() => navigate('/users/create')} className="w-full sm:w-auto justify-center">
+        <Button onClick={() => navigate('/app/users/create')} className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           New User
         </Button>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -151,90 +151,100 @@ export default function UsersList() {
             options={roleOptions}
             value={roleFilter}
             onChange={(e) => updateFilter('role', e.target.value)}
-            className="w-full sm:w-40"
+            className="w-[160px] sm:w-40 flex-shrink-0"
           />
           <Select
             options={statusOptions}
             value={statusFilter}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="w-full sm:w-40"
+            className="w-[160px] sm:w-40 flex-shrink-0"
           />
-          <Button variant="outline" onClick={fetchUsers} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={fetchUsers} className="w-full sm:w-auto flex-shrink-0">
             <RotateCcw className="w-4 h-4 mr-1" />
             Refresh
           </Button>
-          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto flex-shrink-0">
             Reset Filters
           </Button>
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <Table>
-          <TableHead>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Email</TableHeader>
-            <TableHeader>Role</TableHeader>
-            <TableHeader>Status</TableHeader>
-            <TableHeader>Created</TableHeader>
-            <TableHeader className="text-right">Actions</TableHeader>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : users.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                  No users found
-                </TableCell>
-              </TableRow>
-            ) : (
-              users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium text-navy-800 whitespace-nowrap">{user.name}</TableCell>
-                  <TableCell className="whitespace-nowrap">{user.email}</TableCell>
-                  <TableCell>{getRoleBadge(user.role)}</TableCell>
-                  <TableCell>{getStatusBadge(user.is_active)}</TableCell>
-                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(user.created_at)}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => navigate(`/users/${user.id}/edit`)}
-                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      {user.id !== currentUserId && (
-                        <>
-                          <button
-                            onClick={() => openDeleteModal(user.id, user.name, user.role)}
-                            className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                            title="Delete options"
-                          >
-                            <UserX className="w-4 h-4" />
-                          </button>
-                          {user.is_active && (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Name</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Email</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Role</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Created</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-8 text-gray-500 text-sm">
+                    Loading...
+                  </td>
+                </tr>
+              ) : users.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-8 text-gray-500 text-sm">
+                    No users found
+                  </td>
+                </tr>
+              ) : (
+                users.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 font-medium text-navy-800 whitespace-nowrap text-sm">{user.name}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{user.email}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">{getRoleBadge(user.role)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">{getStatusBadge(user.is_active)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-500 whitespace-nowrap">{formatDate(user.created_at)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-right">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          onClick={() => navigate(`/app/users/${user.id}`)}
+                          className="p-2 -m-1 text-gray-600 hover:text-gray-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/app/users/${user.id}/edit`)}
+                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        {user.id !== currentUserId && (
+                          <>
                             <button
-                              onClick={() => handleDelete(user.id, user.name, user.role, false)}
-                              className="p-2 -m-1 text-orange-500 hover:text-orange-700 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                              title="Soft delete (deactivate)"
+                              onClick={() => openDeleteModal(user.id, user.name, user.role)}
+                              className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                              title="Delete options"
                             >
-                              <UserMinus className="w-4 h-4" />
+                              <UserX className="w-4 h-4" />
                             </button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                            {user.is_active && (
+                              <button
+                                onClick={() => handleDelete(user.id, user.name, user.role, false)}
+                                className="p-2 -m-1 text-orange-500 hover:text-orange-700 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title="Soft delete (deactivate)"
+                              >
+                                <UserMinus className="w-4 h-4" />
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {total} users
         </div>
@@ -246,7 +256,7 @@ export default function UsersList() {
         title="Delete User"
       >
         <div className="space-y-4">
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-sm sm:text-base">
             Are you sure you want to delete <strong>{deleteModal.userName}</strong>?
           </p>
           <p className="text-sm text-gray-500">
@@ -255,20 +265,20 @@ export default function UsersList() {
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => handleDelete(deleteModal.userId, deleteModal.userName, deleteModal.userRole, false)}
-              className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-colors"
+              className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-colors text-sm"
             >
               Soft Delete (Deactivate)
             </button>
             <button
               onClick={() => handleDelete(deleteModal.userId, deleteModal.userName, deleteModal.userRole, true)}
-              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
+              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors text-sm"
             >
               Permanent Delete
             </button>
           </div>
           <button
             onClick={() => setDeleteModal({ isOpen: false, userId: null, userName: '', userRole: '' })}
-            className="w-full px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors"
+            className="w-full px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors text-sm"
           >
             Cancel
           </button>

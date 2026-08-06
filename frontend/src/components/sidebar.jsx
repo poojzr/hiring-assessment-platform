@@ -10,7 +10,6 @@ import {
   Video,
   BarChart3,
   UserPlus,
-  Film,
   X
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -19,23 +18,23 @@ export default function Sidebar({ isOpen, onClose }) {
   const { user, isAdmin } = useAuth()
 
   const adminNavItems = [
-    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/users', icon: Users, label: 'Users' },
-    { path: '/candidates', icon: UserCheck, label: 'Candidates' },
-    { path: '/questions', icon: FileQuestion, label: 'Questions' },
-    { path: '/templates', icon: FileText, label: 'Templates' },
-    { path: '/thresholds', icon: Sliders, label: 'Thresholds' },
-    { path: '/sessions', icon: Calendar, label: 'Sessions' },
+    { path: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/app/users', icon: Users, label: 'Users' },
+    { path: '/app/candidates', icon: UserCheck, label: 'Candidates' },
+    { path: '/app/questions', icon: FileQuestion, label: 'Questions' },
+    { path: '/app/templates', icon: FileText, label: 'Templates' },
+    { path: '/app/thresholds', icon: Sliders, label: 'Thresholds' },
+    { path: '/app/sessions', icon: Calendar, label: 'Sessions' },
   ]
 
   const managerNavItems = [
-    { path: '/manager/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/candidates', icon: UserCheck, label: 'Candidates' },
-    { path: '/thresholds', icon: Sliders, label: 'Thresholds' },
-    { path: '/sessions', icon: Calendar, label: 'Sessions' },
-    { path: '/manager/live', icon: Video, label: 'Live Monitoring' },
-    { path: '/manager/analytics', icon: BarChart3, label: 'Analytics' },
-    { path: '/manager/eligible-shortlist', icon: UserPlus, label: 'Shortlist' },
+    { path: '/app/manager/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/app/candidates', icon: UserCheck, label: 'Candidates' },
+    { path: '/app/thresholds', icon: Sliders, label: 'Thresholds' },
+    { path: '/app/sessions', icon: Calendar, label: 'Sessions' },
+    { path: '/app/manager/live', icon: Video, label: 'Live Monitoring' },
+    { path: '/app/manager/analytics', icon: BarChart3, label: 'Analytics' },
+    { path: '/app/manager/eligible-shortlist', icon: UserPlus, label: 'Shortlist' },
   ]
 
   const navItems = isAdmin ? adminNavItems : managerNavItems
@@ -61,7 +60,7 @@ export default function Sidebar({ isOpen, onClose }) {
       >
         <div className="p-4 border-b border-navy-700 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold">Hiring Platform</h1>
+            <h1 className="text-xl font-bold">HireAssess</h1>
             <p className="text-sm text-gray-400 capitalize">{user?.role || 'User'} Panel</p>
           </div>
           <button
@@ -82,7 +81,7 @@ export default function Sidebar({ isOpen, onClose }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors min-h-[44px] ${
                   isActive
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-accent-500 text-white'
                     : 'text-gray-300 hover:bg-navy-700 hover:text-white'
                 }`
               }

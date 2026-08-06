@@ -92,11 +92,11 @@ export default function ManagerDashboard() {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Manager Dashboard</h1>
         <div className="flex flex-wrap gap-2 sm:gap-3">
-          <Button variant="outline" onClick={() => navigate('/manager/live')} className="flex-1 sm:flex-none justify-center">
+          <Button variant="outline" onClick={() => navigate('/app/manager/live')} className="flex-1 sm:flex-none justify-center">
             <Eye className="w-4 h-4 mr-2" />
             <span className="whitespace-nowrap">Live Monitoring ({activeSessions.length})</span>
           </Button>
-          <Button variant="outline" onClick={() => navigate('/sessions')} className="flex-1 sm:flex-none justify-center">
+          <Button variant="outline" onClick={() => navigate('/app/sessions')} className="flex-1 sm:flex-none justify-center">
             <FileText className="w-4 h-4 mr-2" />
             All Sessions
           </Button>
@@ -237,7 +237,7 @@ export default function ManagerDashboard() {
             <Button 
               variant="primary" 
               fullWidth
-              onClick={() => navigate('/manager/live')}
+              onClick={() => navigate('/app/manager/live')}
             >
               <Video className="w-4 h-4 mr-2" />
               Live Monitoring
@@ -245,7 +245,7 @@ export default function ManagerDashboard() {
             <Button 
               variant="outline" 
               fullWidth
-              onClick={() => navigate('/sessions/bulk-create')}
+              onClick={() => navigate('/app/sessions/bulk-create')}
             >
               <Users className="w-4 h-4 mr-2" />
               Bulk Create Sessions
@@ -253,7 +253,7 @@ export default function ManagerDashboard() {
             <Button 
               variant="outline" 
               fullWidth
-              onClick={() => navigate('/sessions')}
+              onClick={() => navigate('/app/sessions')}
             >
               <FileText className="w-4 h-4 mr-2" />
               View All Sessions
@@ -261,7 +261,7 @@ export default function ManagerDashboard() {
             <Button 
               variant="outline" 
               fullWidth
-              onClick={() => navigate('/candidates')}
+              onClick={() => navigate('/app/candidates')}
             >
               <UserCheck className="w-4 h-4 mr-2" />
               Manage Candidates
@@ -269,7 +269,7 @@ export default function ManagerDashboard() {
             <Button 
               variant="outline" 
               fullWidth
-              onClick={() => navigate('/manager/eligible-shortlist')}
+              onClick={() => navigate('/app/manager/eligible-shortlist')}
             >
               <UserPlus className="w-4 h-4 mr-2" />
               Eligible Shortlist
@@ -277,7 +277,7 @@ export default function ManagerDashboard() {
             <Button 
               variant="outline" 
               fullWidth
-              onClick={() => navigate('/manager/analytics')}
+              onClick={() => navigate('/app/manager/analytics')}
             >
               <BarChart3 className="w-4 h-4 mr-2" />
               Analytics
@@ -336,7 +336,7 @@ export default function ManagerDashboard() {
                     </td>
                     <td className="px-3 py-2.5 sm:px-4 sm:py-3">
                       <button
-                        onClick={() => navigate('/sessions/view/' + session.access_token)}
+                        onClick={() => navigate('/app/sessions/view/' + session.access_token)}
                         className="p-2 -m-2 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         <Eye className="w-4 h-4" />

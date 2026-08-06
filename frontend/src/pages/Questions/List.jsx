@@ -127,11 +127,11 @@ export default function QuestionsList() {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Questions</h1>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => navigate('/questions/bulk-import')} className="flex-1 sm:flex-none justify-center">
+          <Button variant="outline" onClick={() => navigate('/app/questions/bulk-import')} className="flex-1 sm:flex-none justify-center">
             <Upload className="w-4 h-4 mr-2" />
             Bulk Import
           </Button>
-          <Button onClick={() => navigate('/questions/create')} className="flex-1 sm:flex-none justify-center">
+          <Button onClick={() => navigate('/app/questions/create')} className="flex-1 sm:flex-none justify-center">
             <Plus className="w-4 h-4 mr-2" />
             New Question
           </Button>
@@ -175,84 +175,88 @@ export default function QuestionsList() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <Table>
-          <TableHead>
-            <TableHeader>Question</TableHeader>
-            <TableHeader>Type</TableHeader>
-            <TableHeader>Difficulty</TableHeader>
-            <TableHeader>Topic</TableHeader>
-            <TableHeader>Tags</TableHeader>
-            <TableHeader>Status</TableHeader>
-            <TableHeader>Created</TableHeader>
-            <TableHeader className="text-right">Actions</TableHeader>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : questions.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                  No questions found
-                </TableCell>
-              </TableRow>
-            ) : (
-              questions.map((q) => (
-                <TableRow key={q.id}>
-                  <TableCell className="font-medium text-navy-800 max-w-xs truncate">
-                    {q.text}
-                  </TableCell>
-                  <TableCell>{getTypeBadge(q.type)}</TableCell>
-                  <TableCell>{getDifficultyBadge(q.difficulty)}</TableCell>
-                  <TableCell className="whitespace-nowrap">{q.topic || '-'}</TableCell>
-                  <TableCell>
-                    {q.tags && q.tags.length > 0 ? (
-                      <div className="flex flex-wrap gap-1">
-                        {q.tags.slice(0, 2).map((tag) => (
-                          <span key={tag} className="px-1.5 py-0.5 bg-gray-100 rounded text-xs whitespace-nowrap">
-                            {tag}
-                          </span>
-                        ))}
-                        {q.tags.length > 2 && (
-                          <span className="text-xs text-gray-400">+{q.tags.length - 2}</span>
-                        )}
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Question</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Type</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Difficulty</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Topic</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Tags</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Created</th>
+                <th className="px-3 py-2.5 sm:px-4 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-gray-500 text-sm">
+                    Loading...
+                  </td>
+                </tr>
+              ) : questions.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-gray-500 text-sm">
+                    No questions found
+                  </td>
+                </tr>
+              ) : (
+                questions.map((q) => (
+                  <tr key={q.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 font-medium text-navy-800 max-w-xs truncate text-sm">
+                      {q.text}
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">{getTypeBadge(q.type)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">{getDifficultyBadge(q.difficulty)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm whitespace-nowrap">{q.topic || '-'}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                      {q.tags && q.tags.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {q.tags.slice(0, 2).map((tag) => (
+                            <span key={tag} className="px-1.5 py-0.5 bg-gray-100 rounded text-xs whitespace-nowrap">
+                              {tag}
+                            </span>
+                          ))}
+                          {q.tags.length > 2 && (
+                            <span className="text-xs text-gray-400">+{q.tags.length - 2}</span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400">-</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3">{getStatusBadge(q.is_active)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-gray-500 whitespace-nowrap">{formatDate(q.created_at)}</td>
+                    <td className="px-3 py-2.5 sm:px-4 sm:py-3 text-right">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          onClick={() => navigate(`/app/questions/${q.id}`)}
+                          className="p-2 -m-1 text-gray-600 hover:text-gray-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/app/questions/${q.id}/edit`)}
+                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(q.id, q.text)}
+                          className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
-                    ) : (
-                      <span className="text-xs text-gray-400">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>{getStatusBadge(q.is_active)}</TableCell>
-                  <TableCell className="text-sm text-gray-500 whitespace-nowrap">{formatDate(q.created_at)}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => navigate(`/questions/${q.id}`)}
-                        className="p-2 -m-1 text-gray-600 hover:text-gray-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => navigate(`/questions/${q.id}/edit`)}
-                        className="p-2 -m-1 text-blue-600 hover:text-blue-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(q.id, q.text)}
-                        className="p-2 -m-1 text-red-600 hover:text-red-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {total} questions
         </div>

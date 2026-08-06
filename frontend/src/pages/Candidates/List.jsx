@@ -79,15 +79,40 @@ export default function CandidatesList() {
   }
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm('Are you sure you want to delete candidate "' + name + '"? This will also delete all associated sessions and data.')) return
+    if (!window.confirm('Are you sure you want to delete candidate "' + name + '"? This will permanently delete all associated sessions and data.')) return
     try {
       await deleteCandidate(id)
-      toast.success('Candidate deleted successfully')
+      toast.success('Candidate and all associated data deleted successfully')
       setDeleteModal({ isOpen: false, candidateId: null, candidateName: '' })
       fetchCandidates()
     } catch (error) {
-      const message = error.response?.data?.detail || 'Failed to delete candidate'
-      toast.error(message)
+      const status = error.response?.status
+      const errorData = error.response?.data
+      let errorMessage = 'Failed to delete candidate'
+      
+      if (status === 400 || status === 422) {
+        if (errorData && typeof errorData === 'object') {
+          if (errorData.detail) {
+            errorMessage = errorData.detail
+          } else if (errorData.message) {
+            errorMessage = errorData.message
+          } else {
+            errorMessage = JSON.stringify(errorData)
+          }
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData
+        }
+        
+        if (errorMessage.toLowerCase().includes('session') || errorMessage.toLowerCase().includes('associated')) {
+          toast.error(`Cannot delete "${name}" - Candidate has associated sessions. Delete the sessions first.`)
+        } else {
+          toast.error(errorMessage)
+        }
+      } else if (status === 404) {
+        toast.error('Candidate not found')
+      } else {
+        toast.error(errorMessage || 'Failed to delete candidate')
+      }
     }
   }
 
@@ -176,7 +201,7 @@ export default function CandidatesList() {
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800">Candidates</h1>
-        <Button onClick={() => navigate('/candidates/create')} className="w-full sm:w-auto justify-center">
+        <Button onClick={() => navigate('/app/candidates/create')} className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           Add Candidate
         </Button>
@@ -200,13 +225,13 @@ export default function CandidatesList() {
             options={shortlistedOptions}
             value={shortlistedFilter}
             onChange={(e) => updateFilter('shortlisted', e.target.value)}
-            className="w-full sm:w-44"
+            className="w-[160px] sm:w-44 flex-shrink-0"
           />
           <Select
             options={jobRoleOptions}
             value={jobRoleFilter}
             onChange={(e) => updateFilter('jobRole', e.target.value)}
-            className="w-full sm:w-48"
+            className="w-[160px] sm:w-48 flex-shrink-0"
           />
           <Button variant="outline" onClick={fetchCandidates} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-1" />
@@ -219,118 +244,120 @@ export default function CandidatesList() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <Table>
-          <TableHead>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Email</TableHeader>
-            <TableHeader>Job Role</TableHeader>
-            <TableHeader>ATS Score</TableHeader>
-            <TableHeader>Threshold</TableHeader>
-            <TableHeader>Shortlisted</TableHeader>
-            <TableHeader>Actions</TableHeader>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : candidates.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                  No candidates found
-                </TableCell>
-              </TableRow>
-            ) : (
-              candidates.map((candidate) => {
-                const threshold = getThresholdForCandidate(candidate)
-                const isEligible = candidate.ats_score !== null && candidate.ats_score >= threshold
-                return (
-                  <TableRow key={candidate.id}>
-                    <TableCell className="font-medium text-navy-800 whitespace-nowrap">{candidate.name}</TableCell>
-                    <TableCell className="whitespace-nowrap">{candidate.email}</TableCell>
-                    <TableCell className="whitespace-nowrap">{candidate.job_role || 'N/A'}</TableCell>
-                    <TableCell>
-                      {candidate.ats_score !== null ? (
-                        <span className={'font-medium ' + (isEligible ? 'text-green-600' : 'text-red-600')}>
-                          {candidate.ats_score}%
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">Not set</span>
-                      )}
-                    </TableCell>
-                    <TableCell>{threshold}%</TableCell>
-                    <TableCell>
-                      {candidate.shortlisted ? (
-                        <Badge variant="success">Yes</Badge>
-                      ) : (
-                        <Badge variant="inactive">No</Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => navigate('/candidates/' + candidate.id)}
-                          className="p-2 -m-1 text-gray-600 hover:text-gray-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                          title="View Details"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => navigate('/candidates/' + candidate.id + '/edit')}
-                          className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                          title="Edit"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => openAtsModal(candidate.id, candidate.name, candidate.ats_score)}
-                          className="p-2 -m-1 text-purple-600 hover:text-purple-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                          title="Check ATS Score"
-                        >
-                          <FileText className="w-4 h-4" />
-                        </button>
-                        {candidate.shortlisted && candidate.access_token && (
-                          <>
-                            <button
-                              onClick={() => handleCopyToken(candidate.access_token)}
-                              className="p-2 -m-1 text-green-600 hover:text-green-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                              title="Copy Assessment Link"
-                            >
-                              <Copy className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleResendEmail(candidate.id)}
-                              className="p-2 -m-1 text-blue-500 hover:text-blue-700 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                              title="Resend Email"
-                            >
-                              <Mail className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => navigate('/sessions/view/' + candidate.access_token)}
-                              className="p-2 -m-1 text-indigo-600 hover:text-indigo-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                              title="View Session"
-                            >
-                              <CheckCircle className="w-4 h-4" />
-                            </button>
-                          </>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHead>
+              <TableHeader>Name</TableHeader>
+              <TableHeader>Email</TableHeader>
+              <TableHeader>Job Role</TableHeader>
+              <TableHeader>ATS Score</TableHeader>
+              <TableHeader>Threshold</TableHeader>
+              <TableHeader>Shortlisted</TableHeader>
+              <TableHeader>Actions</TableHeader>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              ) : candidates.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                    No candidates found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                candidates.map((candidate) => {
+                  const threshold = getThresholdForCandidate(candidate)
+                  const isEligible = candidate.ats_score !== null && candidate.ats_score >= threshold
+                  return (
+                    <TableRow key={candidate.id}>
+                      <TableCell className="font-medium text-navy-800 whitespace-nowrap">{candidate.name}</TableCell>
+                      <TableCell className="whitespace-nowrap">{candidate.email}</TableCell>
+                      <TableCell className="whitespace-nowrap">{candidate.job_role || 'N/A'}</TableCell>
+                      <TableCell>
+                        {candidate.ats_score !== null ? (
+                          <span className={'font-medium ' + (isEligible ? 'text-green-600' : 'text-red-600')}>
+                            {candidate.ats_score}%
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">Not set</span>
                         )}
-                        <button
-                          onClick={() => openDeleteModal(candidate.id, candidate.name)}
-                          className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )
-              })
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
+                      <TableCell>{threshold}%</TableCell>
+                      <TableCell>
+                        {candidate.shortlisted ? (
+                          <Badge variant="success">Yes</Badge>
+                        ) : (
+                          <Badge variant="inactive">No</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => navigate('/app/candidates/' + candidate.id)}
+                            className="p-2 -m-1 text-gray-600 hover:text-gray-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="View Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => navigate('/app/candidates/' + candidate.id + '/edit')}
+                            className="p-2 -m-1 text-blue-600 hover:text-blue-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="Edit"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => openAtsModal(candidate.id, candidate.name, candidate.ats_score)}
+                            className="p-2 -m-1 text-purple-600 hover:text-purple-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="Check ATS Score"
+                          >
+                            <FileText className="w-4 h-4" />
+                          </button>
+                          {candidate.shortlisted && candidate.access_token && (
+                            <>
+                              <button
+                                onClick={() => handleCopyToken(candidate.access_token)}
+                                className="p-2 -m-1 text-green-600 hover:text-green-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title="Copy Assessment Link"
+                              >
+                                <Copy className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleResendEmail(candidate.id)}
+                                className="p-2 -m-1 text-blue-500 hover:text-blue-700 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title="Resend Email"
+                              >
+                                <Mail className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => navigate('/app/sessions/view/' + candidate.access_token)}
+                                className="p-2 -m-1 text-indigo-600 hover:text-indigo-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title="View Session"
+                              >
+                                <CheckCircle className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => openDeleteModal(candidate.id, candidate.name)}
+                            className="p-2 -m-1 text-red-600 hover:text-red-800 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
         <div className="px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
           Total: {total} candidates
         </div>
@@ -343,15 +370,15 @@ export default function CandidatesList() {
       >
         <div className="space-y-4">
           <p className="text-gray-700">
-            Are you sure you want to delete <strong>{deleteModal.candidateName}</strong>?
+            Are you sure you want to permanently delete <strong>{deleteModal.candidateName}</strong>?
           </p>
-          <p className="text-sm text-red-600">This will also delete all associated sessions and data.</p>
+          <p className="text-sm text-red-600">This will permanently delete all associated sessions, recordings, and data. This action cannot be undone.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               variant="danger"
               onClick={() => handleDelete(deleteModal.candidateId, deleteModal.candidateName)}
             >
-              Delete
+              Delete Permanently
             </Button>
             <Button
               variant="outline"

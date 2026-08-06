@@ -41,7 +41,7 @@ export default function CandidateDetail() {
   }, [id])
 
   const handleCancel = () => {
-    navigate('/candidates')
+    navigate('/app/candidates')
   }
 
   if (loading) {
@@ -64,13 +64,13 @@ export default function CandidateDetail() {
   const isEligible = candidate.ats_score !== null && threshold && candidate.ats_score >= threshold.ats_threshold
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto px-4 sm:px-0">
       <div className="flex items-center gap-3 sm:gap-4 mb-6">
         <button onClick={handleCancel} className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="text-xl sm:text-2xl font-bold text-navy-800 flex-1 min-w-0">Candidate Details</h1>
-        <Link to={'/candidates/' + candidate.id + '/edit'} className="flex-shrink-0">
+        <Link to={'/app/candidates/' + candidate.id + '/edit'} className="flex-shrink-0">
           <Button size="sm">
             <Edit className="w-4 h-4 mr-1" /> Edit
           </Button>
