@@ -7,7 +7,8 @@ from datetime import datetime, timedelta
 import math
 import struct
 import os
-from .yolo_detector import YOLOMobileDetector, detect_mobile_yolo, yolo_detector as _shared_yolo_detector
+
+from .yolo_detector import YOLOMobileDetector, detect_mobile_yolo
 
 def now():
     return datetime.utcnow() + timedelta(hours=5, minutes=30)
@@ -51,7 +52,7 @@ class FaceDetector:
             self.mp_face_detection = mp.solutions.face_detection
             self.face_detection = self.mp_face_detection.FaceDetection(
                 model_selection=0,
-                min_detection_confidence=0.5
+                min_detection_confidence=0.3
             )
             self._initialized = True
             print("[FaceDetector] MediaPipe initialized successfully")
@@ -144,7 +145,7 @@ class FaceDetector:
 
 class MobileDetector:
     def __init__(self):
-        self.yolo_detector = _shared_yolo_detector
+        self.yolo_detector = YOLOMobileDetector()
         self._initialized = True
         print("[MobileDetector] Initialized with YOLO")
 
@@ -154,9 +155,27 @@ class MobileDetector:
 
         try:
             yolo_result = self.yolo_detector.detect(frame_data)
+            
+            # LOWER CONFIDENCE THRESHOLD FOR MOBILE DETECTION
             if yolo_result.get("detected", False):
-                print(f"[MobileDetector] Phone detected with confidence: {yolo_result.get('confidence', 0)}")
-            return yolo_result
+                confidence = yolo_result.get("confidence", 0)
+                print(f"[MobileDetector] Phone detected with confidence: {confidence}")
+                return {
+                    "detected": True,
+                    "confidence": confidence,
+                    "boxes": yolo_result.get("boxes", [])
+                }
+            
+            # If YOLO returns low confidence but still detected, treat as detected
+            if yolo_result.get("detected", False) or yolo_result.get("confidence", 0) > 0.3:
+                print(f"[MobileDetector] Phone detected with low confidence: {yolo_result.get('confidence', 0)}")
+                return {
+                    "detected": True,
+                    "confidence": yolo_result.get("confidence", 0),
+                    "boxes": yolo_result.get("boxes", [])
+                }
+            
+            return {"detected": False, "confidence": 0.0}
         except Exception as e:
             print(f"[MobileDetector] YOLO error: {e}")
             return {"detected": False, "confidence": 0.0, "error": str(e)}
@@ -169,16 +188,17 @@ class VoiceDetector:
     def detect_loud_voice(self, audio_data: bytes) -> Dict[str, Any]:
         try:
             if not audio_data or len(audio_data) < 100:
-                return {"is_loud": False, "level": 0.0}
+                return {"is_loud": False, "level": 0.0, "status": "NO_VOICE"}
             
             audio_array = np.frombuffer(audio_data, dtype=np.float32)
             if len(audio_array) == 0:
-                return {"is_loud": False, "level": 0.0}
+                return {"is_loud": False, "level": 0.0, "status": "NO_VOICE"}
             
             rms = float(np.sqrt(np.mean(audio_array.astype(np.float64) ** 2)))
             normalized = min(1.0, rms)
             
-            is_loud = normalized > 0.05
+            is_loud = normalized > 0.015
+            is_very_loud = normalized > 0.08
             
             self._log_counter += 1
             if self._log_counter % 20 == 0:
@@ -189,13 +209,14 @@ class VoiceDetector:
             
             return {
                 "is_loud": is_loud,
-                "is_very_loud": bool(normalized > 0.12),
+                "is_very_loud": is_very_loud,
                 "level": float(normalized),
+                "status": "LOUD_VOICE" if is_loud else "NO_VOICE",
                 "db": float(20 * math.log10(normalized + 0.0001))
             }
         except Exception as e:
             print(f"[VoiceDetector] Error: {e}")
-            return {"is_loud": False, "level": 0.0, "error": str(e)}
+            return {"is_loud": False, "level": 0.0, "status": "NO_VOICE", "error": str(e)}
     
     def detect_multiple_voices(self, audio_data: bytes) -> Dict[str, Any]:
         try:
@@ -233,7 +254,7 @@ class LipSyncDetector:
         self._lock = threading.Lock()
         self.upper_lip_idx = 13
         self.lower_lip_idx = 14
-        self.mouth_open_threshold = 0.015
+        self.mouth_open_threshold = 0.018
         self._init_face_mesh()
 
     def _init_face_mesh(self):
@@ -244,8 +265,8 @@ class LipSyncDetector:
                 static_image_mode=False,
                 max_num_faces=1,
                 refine_landmarks=True,
-                min_detection_confidence=0.5,
-                min_tracking_confidence=0.5,
+                min_detection_confidence=0.3,
+                min_tracking_confidence=0.3,
             )
             print("[LipSyncDetector] FaceMesh initialized successfully")
         except Exception as e:
@@ -277,13 +298,13 @@ class LipSyncDetector:
     def detect_mismatch(self, video_frames: List[bytes], audio_data: bytes) -> Dict[str, Any]:
         try:
             if self._face_mesh is None:
-                return {"matched": True, "confidence": 1.0}
+                return {"matched": True, "confidence": 1.0, "status": "LIP_SYNC_MATCH"}
 
             if not video_frames or len(video_frames) < 5:
-                return {"matched": True, "confidence": 1.0}
+                return {"matched": True, "confidence": 1.0, "status": "LIP_SYNC_MATCH"}
 
             if not audio_data or len(audio_data) < 100:
-                return {"matched": True, "confidence": 1.0}
+                return {"matched": True, "confidence": 1.0, "status": "LIP_SYNC_MATCH"}
 
             mouth_distances = []
             for frame in video_frames[-10:]:
@@ -292,26 +313,26 @@ class LipSyncDetector:
                     mouth_distances.append(distance)
 
             if len(mouth_distances) < 3:
-                return {"matched": True, "confidence": 0.9}
+                return {"matched": True, "confidence": 0.9, "status": "LIP_SYNC_MATCH"}
 
             mouth_open_ratio = sum(1 for d in mouth_distances if d > self.mouth_open_threshold) / len(mouth_distances)
 
             audio_array = np.frombuffer(audio_data, dtype=np.float32)
             rms = float(np.sqrt(np.mean(audio_array.astype(np.float64) ** 2))) if len(audio_array) > 0 else 0.0
-            has_voice = rms > 0.03
+            has_voice = rms > 0.015
 
-            if mouth_open_ratio > 0.6 and not has_voice:
-                print(f"[LipSync] Mismatch detected: mouth open ratio {mouth_open_ratio:.2f}, voice level {rms:.4f}")
-                return {"matched": False, "confidence": 0.7}
-            if mouth_open_ratio < 0.15 and has_voice:
-                print(f"[LipSync] Mismatch detected: mouth open ratio {mouth_open_ratio:.2f}, voice level {rms:.4f}")
-                return {"matched": False, "confidence": 0.6}
+            if has_voice:
+                return {"matched": True, "confidence": 0.9, "status": "LIP_SYNC_MATCH"}
 
-            return {"matched": True, "confidence": 0.9}
+            if mouth_open_ratio > 0.5 and not has_voice:
+                print(f"[LipSync] Mismatch detected: mouth open ratio {mouth_open_ratio:.2f}, voice level {rms:.4f}")
+                return {"matched": False, "confidence": 0.7, "status": "LIP_SYNC_MISMATCH"}
+
+            return {"matched": True, "confidence": 0.9, "status": "LIP_SYNC_MATCH"}
 
         except Exception as e:
             print(f"[LipSync] Error: {e}")
-            return {"matched": True, "confidence": 0.5, "error": str(e)}
+            return {"matched": True, "confidence": 0.5, "error": str(e), "status": "LIP_SYNC_MATCH"}
 
 class BrightnessDetector:
     def detect(self, frame_data: bytes) -> Dict[str, Any]:
@@ -369,11 +390,15 @@ class ProctorDetectionService:
             "mobile": mobile_result,
             "brightness": brightness_result,
             "violations": [],
+            "lip_sync": {"matched": True, "status": "LIP_SYNC_MATCH"},
             "timestamp": now().isoformat()
         }
         
+        is_loud = False
         if audio_data and self.voice_detector:
-            results["voice"] = self.voice_detector.detect_loud_voice(audio_data)
+            voice_result = self.voice_detector.detect_loud_voice(audio_data)
+            is_loud = voice_result.get("is_loud", False)
+            results["voice"] = voice_result
             results["multiple_voices"] = self.voice_detector.detect_multiple_voices(audio_data)
         
         violations = []
@@ -390,14 +415,18 @@ class ProctorDetectionService:
         if brightness_result.get("is_very_dark", False):
             violations.append({"type": "DARK_ENVIRONMENT", "severity": "medium", "detected": True})
         
-        if audio_data and self.voice_detector:
-            voice_result = results.get("voice", {})
-            if voice_result.get("is_loud", False):
-                violations.append({"type": "LOUD_VOICE", "severity": "medium", "detected": True})
-            
-            multiple_voices = results.get("multiple_voices", {})
-            if multiple_voices.get("multiple_voices", False):
-                violations.append({"type": "MULTIPLE_VOICE", "severity": "high", "detected": True})
+        if is_loud:
+            violations.append({"type": "LOUD_VOICE", "severity": "medium", "detected": True})
+        else:
+            if audio_data and self.lip_sync_detector:
+                lip_sync_result = self.lip_sync_detector.detect_mismatch([frame_data], audio_data)
+                results["lip_sync"] = lip_sync_result
+                if lip_sync_result.get("status") == "LIP_SYNC_MISMATCH":
+                    violations.append({"type": "LIP_SYNC_MISMATCH", "severity": "medium", "detected": True})
+        
+        multiple_voices = results.get("multiple_voices", {})
+        if multiple_voices.get("multiple_voices", False):
+            violations.append({"type": "MULTIPLE_VOICE", "severity": "high", "detected": True})
         
         results["violations"] = violations
         
