@@ -4,6 +4,7 @@ import os
 from .config import settings
 from .database import ensure_schema
 from .routers import (
+    contact,
     auth_router,
     admin_router,
     candidate_router,
@@ -11,7 +12,8 @@ from .routers import (
     proctor_router,
     recording_router,
     manager_router,
-    evaluation_router,
+    evaluation_router
+    
 )
 
 app = FastAPI(
@@ -53,6 +55,7 @@ app.include_router(proctor_router, prefix="/api")
 app.include_router(recording_router, prefix="/api")
 app.include_router(manager_router, prefix="/api")
 app.include_router(evaluation_router, prefix="/api")
+app.include_router(contact.router, prefix="/api")
 
 os.makedirs(settings.STORAGE_DIR, exist_ok=True)
 
