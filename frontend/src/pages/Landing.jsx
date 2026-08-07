@@ -10,10 +10,13 @@ import {
 } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Badge from '../components/ui/Badge'
+import ThemeToggle from '../components/ThemeToggle'
+import ContactModal from '../components/ContactModal'
 
 export default function Landing() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isContactOpen, setIsContactOpen] = useState(false)
   const [isVisible, setIsVisible] = useState({})
 
   useEffect(() => {
@@ -44,6 +47,11 @@ export default function Landing() {
     }
   }
 
+  const openContact = () => {
+    setIsMenuOpen(false)
+    setIsContactOpen(true)
+  }
+
   const features = [
     { icon: LayoutDashboard, title: 'Admin Dashboard', desc: 'Complete user management, question bank, template creation, and threshold configuration.' },
     { icon: Users, title: 'Manager Dashboard', desc: 'Session management, candidate monitoring, eligibility shortlisting, and analytics.' },
@@ -63,9 +71,9 @@ export default function Landing() {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-dark-900 transition-colors duration-300">
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        scrolled ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100/50' : 'bg-transparent'
+        scrolled ? 'bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl shadow-lg border-b border-gray-100/50 dark:border-dark-700/50' : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 sm:h-20">
@@ -73,34 +81,35 @@ export default function Landing() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-accent-400 to-accent-600 rounded-xl flex items-center justify-center shadow-lg shadow-accent-500/30 group-hover:scale-110 transition-transform duration-300">
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" aria-hidden="true" />
               </div>
-              <span className="text-lg sm:text-xl font-bold text-navy-800">HireAssess</span>
+              <span className="text-lg sm:text-xl font-bold text-navy-800 dark:text-white">HireAssess</span>
             </div>
 
             <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection('hero')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to home">
+              <button onClick={() => scrollToSection('hero')} className="text-sm text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 transition-all duration-300 relative group" aria-label="Go to home">
                 Home
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('about')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to about section">
+              <button onClick={() => scrollToSection('about')} className="text-sm text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 transition-all duration-300 relative group" aria-label="Go to about section">
                 About
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('features')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to features section">
+              <button onClick={() => scrollToSection('features')} className="text-sm text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 transition-all duration-300 relative group" aria-label="Go to features section">
                 Features
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('howitworks')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to how it works section">
+              <button onClick={() => scrollToSection('howitworks')} className="text-sm text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 transition-all duration-300 relative group" aria-label="Go to how it works section">
                 How It Works
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
-              <button onClick={() => scrollToSection('cta')} className="text-sm text-gray-600 hover:text-accent-500 transition-all duration-300 relative group" aria-label="Go to contact section">
+              <button onClick={openContact} className="text-sm text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 transition-all duration-300 relative group" aria-label="Open contact form">
                 Contact
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-500 group-hover:w-full transition-all duration-300" aria-hidden="true"></span>
               </button>
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              <Link to="/login" className="text-sm text-navy-700 hover:text-accent-500 transition-all duration-300 font-medium group" aria-label="Sign in to your account">
+              <ThemeToggle />
+              <Link to="/login" className="text-sm text-navy-700 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 transition-all duration-300 font-medium group" aria-label="Sign in to your account">
                 Sign In
                 <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-accent-500" aria-hidden="true"></span>
               </Link>
@@ -109,24 +118,27 @@ export default function Landing() {
               </Link>
             </div>
 
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-            >
-              {isMenuOpen ? <X className="w-6 h-6 text-navy-800" aria-hidden="true" /> : <Menu className="w-6 h-6 text-navy-800" aria-hidden="true" />}
-            </button>
+            <div className="flex items-center gap-2 md:hidden">
+              <ThemeToggle />
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors"
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              >
+                {isMenuOpen ? <X className="w-6 h-6 text-navy-800 dark:text-white" aria-hidden="true" /> : <Menu className="w-6 h-6 text-navy-800 dark:text-white" aria-hidden="true" />}
+              </button>
+            </div>
           </div>
 
           {isMenuOpen && (
-            <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 py-4 px-4 space-y-3">
-              <button onClick={() => scrollToSection('hero')} className="block w-full text-left text-gray-600 hover:text-accent-500 py-2">Home</button>
-              <button onClick={() => scrollToSection('about')} className="block w-full text-left text-gray-600 hover:text-accent-500 py-2">About</button>
-              <button onClick={() => scrollToSection('features')} className="block w-full text-left text-gray-600 hover:text-accent-500 py-2">Features</button>
-              <button onClick={() => scrollToSection('howitworks')} className="block w-full text-left text-gray-600 hover:text-accent-500 py-2">How It Works</button>
-              <button onClick={() => scrollToSection('cta')} className="block w-full text-left text-gray-600 hover:text-accent-500 py-2">Contact</button>
-              <div className="pt-4 border-t border-gray-100 space-y-3">
-                <Link to="/login" className="block w-full text-center text-navy-700 hover:text-accent-500 font-medium py-2">Sign In</Link>
+            <div className="md:hidden bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl border-t border-gray-100 dark:border-dark-700 py-4 px-4 space-y-3">
+              <button onClick={() => scrollToSection('hero')} className="block w-full text-left text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 py-2">Home</button>
+              <button onClick={() => scrollToSection('about')} className="block w-full text-left text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 py-2">About</button>
+              <button onClick={() => scrollToSection('features')} className="block w-full text-left text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 py-2">Features</button>
+              <button onClick={() => scrollToSection('howitworks')} className="block w-full text-left text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 py-2">How It Works</button>
+              <button onClick={openContact} className="block w-full text-left text-gray-600 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 py-2">Contact</button>
+              <div className="pt-4 border-t border-gray-100 dark:border-dark-700 space-y-3">
+                <Link to="/login" className="block w-full text-center text-navy-700 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 font-medium py-2">Sign In</Link>
                 <Link to="/login" className="block w-full text-center bg-gradient-to-r from-accent-500 to-accent-600 text-white py-2.5 rounded-lg font-medium">Get Started</Link>
               </div>
             </div>
@@ -135,7 +147,7 @@ export default function Landing() {
       </nav>
 
       <section id="hero" className="relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-accent-50/30 to-white" aria-hidden="true"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-accent-50/30 to-white dark:from-dark-900 dark:via-accent-900/10 dark:to-dark-900" aria-hidden="true"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className={`transition-all duration-1000 transform ${isVisible.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
@@ -143,7 +155,7 @@ export default function Landing() {
                 <Sparkles className="w-3 h-3 inline mr-1" aria-hidden="true" />
                 Enterprise Assessment Platform
               </Badge>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-navy-800 leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-navy-800 dark:text-white leading-tight">
                 Smart Hiring{' '}
                 <span className="bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent">
                   Assessments
@@ -151,7 +163,7 @@ export default function Landing() {
                 <br />
                 <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">with AI Proctoring</span>
               </h1>
-              <p className="mt-6 text-lg sm:text-xl text-gray-600 leading-relaxed max-w-lg">
+              <p className="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-lg">
                 Complete assessment platform with real-time proctoring, candidate management, 
                 and advanced analytics for technical hiring.
               </p>
@@ -164,64 +176,55 @@ export default function Landing() {
                 </Link>
                 <button 
                   onClick={() => scrollToSection('features')}
-                  className="px-6 py-3 border-2 border-gray-300 hover:border-accent-500 text-gray-700 hover:text-accent-500 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-accent-50"
+                  className="px-6 py-3 border-2 border-gray-300 dark:border-dark-600 hover:border-accent-500 text-gray-700 dark:text-gray-300 hover:text-accent-500 dark:hover:text-accent-400 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-accent-50 dark:hover:bg-accent-900/20"
                   aria-label="Explore features"
                 >
                   Explore Features
                 </button>
               </div>
-              <div className="mt-10 flex flex-wrap items-center gap-6">
-                <div className="flex -space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg" aria-hidden="true">JD</div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg" aria-hidden="true">MK</div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-white flex items-center justify-center text-xs font-bold text-gray-600 shadow-lg" aria-hidden="true">SR</div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-100 to-accent-200 border-2 border-white flex items-center justify-center text-xs font-bold text-accent-600 shadow-lg" aria-hidden="true">+</div>
-                </div>
-                <span className="text-sm text-gray-500">Join 500+ enterprises</span>
-              </div>
             </div>
 
             <div className={`relative transition-all duration-1000 delay-300 transform ${isVisible.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               <div className="absolute -inset-4 bg-gradient-to-r from-accent-500/20 to-accent-600/20 rounded-3xl blur-2xl" aria-hidden="true"></div>
-              <div className="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100">
+              <div className="relative bg-white dark:bg-dark-800 rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-dark-700">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center" aria-hidden="true">
-                    <LayoutDashboard className="w-7 h-7 text-accent-600" aria-hidden="true" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 dark:from-accent-900/50 dark:to-accent-800/50 rounded-xl flex items-center justify-center" aria-hidden="true">
+                    <LayoutDashboard className="w-7 h-7 text-accent-600 dark:text-accent-400" aria-hidden="true" />
                   </div>
                   <div>
-                    <div className="font-semibold text-navy-800 text-lg">Platform Overview</div>
-                    <div className="text-sm text-gray-500">Complete assessment solution</div>
+                    <div className="font-semibold text-navy-800 dark:text-white text-lg">Platform Overview</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Complete assessment solution</div>
                   </div>
-                  <span className="ml-auto px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">Live</span>
+                  <span className="ml-auto px-3 py-1.5 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 rounded-full text-xs font-medium">Live</span>
                 </div>
                 
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 mb-6">
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-800 rounded-xl p-6 mb-6">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-medium text-gray-600">Active Sessions</span>
-                    <span className="text-2xl font-bold text-accent-600">12</span>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Sessions</span>
+                    <span className="text-2xl font-bold text-accent-600 dark:text-accent-400">12</span>
                   </div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-medium text-gray-600">Today's Candidates</span>
-                    <span className="text-2xl font-bold text-navy-800">48</span>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Today's Candidates</span>
+                    <span className="text-2xl font-bold text-navy-800 dark:text-white">48</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-600">Completion Rate</span>
-                    <span className="text-2xl font-bold text-green-600">94%</span>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Completion Rate</span>
+                    <span className="text-2xl font-bold text-green-600 dark:text-green-400">94%</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-green-50 p-3 rounded-xl text-center">
-                    <CheckCircle className="w-5 h-5 text-green-600 mx-auto mb-1" aria-hidden="true" />
-                    <span className="text-xs font-medium text-green-700">Face Detection</span>
+                  <div className="bg-green-50 dark:bg-green-900/30 p-3 rounded-xl text-center">
+                    <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mx-auto mb-1" aria-hidden="true" />
+                    <span className="text-xs font-medium text-green-700 dark:text-green-300">Face Detection</span>
                   </div>
-                  <div className="bg-yellow-50 p-3 rounded-xl text-center">
-                    <AlertTriangle className="w-5 h-5 text-yellow-600 mx-auto mb-1" aria-hidden="true" />
-                    <span className="text-xs font-medium text-yellow-700">Tab Tracking</span>
+                  <div className="bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded-xl text-center">
+                    <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mx-auto mb-1" aria-hidden="true" />
+                    <span className="text-xs font-medium text-yellow-700 dark:text-yellow-300">Tab Tracking</span>
                   </div>
-                  <div className="bg-blue-50 p-3 rounded-xl text-center">
-                    <Monitor className="w-5 h-5 text-blue-600 mx-auto mb-1" aria-hidden="true" />
-                    <span className="text-xs font-medium text-blue-700">Screen Share</span>
+                  <div className="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl text-center">
+                    <Monitor className="w-5 h-5 text-blue-600 dark:text-blue-400 mx-auto mb-1" aria-hidden="true" />
+                    <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Screen Share</span>
                   </div>
                 </div>
               </div>
@@ -230,79 +233,79 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="about" className="py-20 sm:py-28 px-4 bg-white">
+      <section id="about" className="py-20 sm:py-28 px-4 bg-white dark:bg-dark-900">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <Badge variant="primary" className="mb-4">About HireAssess</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800 dark:text-white">
               Built for <span className="bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent">Modern Hiring</span>
             </h2>
-            <p className="mt-4 text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="mt-4 text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">
               HireAssess is a complete hiring assessment platform designed for enterprises 
               to conduct secure, proctored technical assessments.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-8">
-            <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white dark:from-dark-800 dark:to-dark-900 border border-gray-100 dark:border-dark-700 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`}>
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg" aria-hidden="true">
                 <Shield className="w-10 h-10 text-white" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-bold text-navy-800 mb-3">Secure Proctoring</h3>
-              <p className="text-gray-500">AI-powered integrity monitoring for fair assessments</p>
+              <h3 className="text-xl font-bold text-navy-800 dark:text-white mb-3">Secure Proctoring</h3>
+              <p className="text-gray-500 dark:text-gray-400">AI-powered integrity monitoring for fair assessments</p>
             </div>
 
-            <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '150ms' }}>
+            <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white dark:from-dark-800 dark:to-dark-900 border border-gray-100 dark:border-dark-700 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '150ms' }}>
               <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg" aria-hidden="true">
                 <Users className="w-10 h-10 text-white" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-bold text-navy-800 mb-3">Complete Management</h3>
-              <p className="text-gray-500">End-to-end candidate and assessment management</p>
+              <h3 className="text-xl font-bold text-navy-800 dark:text-white mb-3">Complete Management</h3>
+              <p className="text-gray-500 dark:text-gray-400">End-to-end candidate and assessment management</p>
             </div>
 
-            <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '300ms' }}>
+            <div className={`text-center p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white dark:from-dark-800 dark:to-dark-900 border border-gray-100 dark:border-dark-700 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${isVisible.about ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '300ms' }}>
               <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg" aria-hidden="true">
                 <TrendingUp className="w-10 h-10 text-white" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-bold text-navy-800 mb-3">Data-Driven Insights</h3>
-              <p className="text-gray-500">Detailed analytics for better hiring decisions</p>
+              <h3 className="text-xl font-bold text-navy-800 dark:text-white mb-3">Data-Driven Insights</h3>
+              <p className="text-gray-500 dark:text-gray-400">Detailed analytics for better hiring decisions</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="features" className="py-20 sm:py-28 px-4 bg-gradient-to-b from-gray-50 to-white">
+      <section id="features" className="py-20 sm:py-28 px-4 bg-gradient-to-b from-gray-50 to-white dark:from-dark-800 dark:to-dark-900">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <Badge variant="primary" className="mb-4">Features</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800 dark:text-white">
               Complete Assessment <span className="bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent">Platform</span>
             </h2>
-            <p className="mt-4 text-gray-600 text-lg">Everything you need for secure, proctored technical assessments</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-300 text-lg">Everything you need for secure, proctored technical assessments</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-              <div key={index} className={`group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-6 border border-gray-100 hover:border-accent-200 flex flex-col h-full ${isVisible.features ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 100}ms` }}>
-                <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
-                  <feature.icon className="w-7 h-7 text-accent-600" aria-hidden="true" />
+              <div key={index} className={`group bg-white dark:bg-dark-800 rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-6 border border-gray-100 dark:border-dark-700 hover:border-accent-200 dark:hover:border-accent-700 flex flex-col h-full ${isVisible.features ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 100}ms` }}>
+                <div className="w-14 h-14 bg-gradient-to-br from-accent-100 to-accent-200 dark:from-accent-900/50 dark:to-accent-800/50 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
+                  <feature.icon className="w-7 h-7 text-accent-600 dark:text-accent-400" aria-hidden="true" />
                 </div>
-                <h3 className="text-xl font-bold text-navy-800 mb-3">{feature.title}</h3>
-                <p className="text-gray-500 flex-1">{feature.desc}</p>
+                <h3 className="text-xl font-bold text-navy-800 dark:text-white mb-3">{feature.title}</h3>
+                <p className="text-gray-500 dark:text-gray-400 flex-1">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="howitworks" className="py-20 sm:py-28 px-4 bg-white">
+      <section id="howitworks" className="py-20 sm:py-28 px-4 bg-white dark:bg-dark-900">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.howitworks ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <Badge variant="primary" className="mb-4">How It Works</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800 dark:text-white">
               Simple <span className="bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent">4-Step</span> Process
             </h2>
-            <p className="mt-4 text-gray-600 text-lg">From assessment creation to hiring decision in minutes</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-300 text-lg">From assessment creation to hiring decision in minutes</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -312,37 +315,37 @@ export default function Landing() {
               { step: '03', title: 'Live Proctoring', desc: 'Monitor candidates with real-time face detection and screen tracking' },
               { step: '04', title: 'Evaluate & Hire', desc: 'Review reports and shortlist the best candidates' },
             ].map((item, index) => (
-              <div key={index} className={`bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-8 border border-gray-100 flex flex-col h-full ${isVisible.howitworks ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 150}ms` }}>
-                <div className="text-5xl font-bold text-accent-500 mb-4" aria-hidden="true">
+              <div key={index} className={`bg-white dark:bg-dark-800 rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-8 border border-gray-100 dark:border-dark-700 flex flex-col h-full ${isVisible.howitworks ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 150}ms` }}>
+                <div className="text-5xl font-bold text-accent-500 dark:text-accent-400 mb-4" aria-hidden="true">
                   {item.step}
                 </div>
-                <h3 className="text-xl font-bold text-navy-800 mb-3">{item.title}</h3>
-                <p className="text-gray-500 flex-1">{item.desc}</p>
+                <h3 className="text-xl font-bold text-navy-800 dark:text-white mb-3">{item.title}</h3>
+                <p className="text-gray-500 dark:text-gray-400 flex-1">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="proctoring" className="py-20 sm:py-28 px-4 bg-gradient-to-b from-gray-50 to-white">
+      <section id="proctoring" className="py-20 sm:py-28 px-4 bg-gradient-to-b from-gray-50 to-white dark:from-dark-800 dark:to-dark-900">
         <div className="max-w-7xl mx-auto">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 transform ${isVisible.proctoring ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <Badge variant="warning" className="mb-4">Proctoring Suite</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-800 dark:text-white">
               AI-Powered <span className="bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent">Integrity</span> Monitoring
             </h2>
-            <p className="mt-4 text-gray-600 text-lg">Ensure assessment integrity with comprehensive proctoring features</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-300 text-lg">Ensure assessment integrity with comprehensive proctoring features</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {proctoringFeatures.map((feature, index) => (
-              <div key={index} className={`group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 p-6 border border-gray-100 hover:border-accent-200 flex items-start gap-5 ${isVisible.proctoring ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 80}ms` }}>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
-                  <feature.icon className="w-6 h-6 text-accent-600" aria-hidden="true" />
+              <div key={index} className={`group bg-white dark:bg-dark-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 p-6 border border-gray-100 dark:border-dark-700 hover:border-accent-200 dark:hover:border-accent-700 flex items-start gap-5 ${isVisible.proctoring ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 80}ms` }}>
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-200 dark:from-accent-900/50 dark:to-accent-800/50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
+                  <feature.icon className="w-6 h-6 text-accent-600 dark:text-accent-400" aria-hidden="true" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-navy-800 text-base">{feature.title}</h4>
-                  <p className="text-sm text-gray-500 mt-1">{feature.desc}</p>
+                  <h4 className="font-bold text-navy-800 dark:text-white text-base">{feature.title}</h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{feature.desc}</p>
                 </div>
               </div>
             ))}
@@ -367,11 +370,12 @@ export default function Landing() {
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </Button>
             </Link>
-            <Link to="/login" aria-label="Sign in to your account">
-              <button className="px-6 py-3 border-2 border-gray-600 hover:border-accent-500 text-gray-300 hover:text-white rounded-lg text-sm font-medium transition-all duration-300 hover:bg-accent-500/10">
-                Sign In
-              </button>
-            </Link>
+            <button 
+              onClick={openContact}
+              className="px-6 py-3 border-2 border-gray-600 hover:border-accent-500 text-gray-300 hover:text-white rounded-lg text-sm font-medium transition-all duration-300 hover:bg-accent-500/10"
+            >
+              Contact Us
+            </button>
           </div>
         </div>
       </section>
@@ -428,9 +432,11 @@ export default function Landing() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">Contact</h4>
               <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-gray-500" aria-hidden="true" />
-                  <span>support@hireassess.com</span>
+                <li>
+                  <button onClick={openContact} className="flex items-center gap-3 hover:text-accent-500 transition-colors">
+                    <Mail className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                    <span>support@hireassess.com</span>
+                  </button>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />
@@ -450,6 +456,8 @@ export default function Landing() {
           </div>
         </div>
       </footer>
+
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </div>
   )
 }

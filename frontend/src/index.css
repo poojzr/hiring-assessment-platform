@@ -10,7 +10,10 @@
   }
 
   body {
-    @apply bg-gray-50 text-navy-800 font-sans antialiased;
+    @apply font-sans antialiased;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   #root {
@@ -49,10 +52,17 @@
 
   .input {
     @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
   }
 
   .input-error {
     @apply border-red-500 focus:ring-red-500;
+  }
+
+  .input::placeholder {
+    color: var(--text-secondary);
   }
 
   .label {
@@ -61,6 +71,9 @@
 
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-100;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    transition: background 0.3s ease, border-color 0.3s ease;
   }
 
   .card-header {
@@ -70,4 +83,172 @@
   .card-body {
     @apply px-6 py-4;
   }
+}
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f2f5;
+  --text-primary: #222a34;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --text-primary: #f1f3f5;
+  --text-secondary: #adb5bd;
+  --border-color: #2d2d44;
+}
+
+body {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.input {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.input::placeholder {
+  color: var(--text-secondary);
+}
+
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-700,
+.dark .text-navy-700,
+.dark .text-navy-800 {
+  color: #e5e7eb !important;
+}
+
+.dark .bg-white {
+  background: #1a1a2e !important;
+}
+
+.dark .bg-gray-50 {
+  background: #16213e !important;
+}
+
+.dark .bg-gray-100 {
+  background: #2d2d44 !important;
+}
+
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: #2d2d44 !important;
+}
+
+.dark .shadow-sm,
+.dark .shadow-lg {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .divide-gray-200 > * {
+  border-color: #2d2d44 !important;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background: #1a1a2e !important;
+  color: #f1f3f5 !important;
+  border-color: #2d2d44 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+.dark select {
+  background-color: #1a1a2e !important;
+  color: #f1f3f5 !important;
+}
+
+.dark table {
+  background: #1a1a2e !important;
+}
+
+.dark table thead {
+  background: #16213e !important;
+}
+
+.dark table tbody tr {
+  border-color: #2d2d44 !important;
+}
+
+.dark table tbody tr:hover {
+  background: #2d2d44 !important;
+}
+
+.dark table td,
+.dark table th {
+  color: #e5e7eb !important;
+  border-color: #2d2d44 !important;
+}
+
+.dark .hover\:bg-gray-50:hover {
+  background: #2d2d44 !important;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  background: #2d2d44 !important;
+}
+
+.dark .focus\:ring-2:focus {
+  --tw-ring-color: #00af87 !important;
+}
+
+.dark .focus\:border-transparent:focus {
+  border-color: transparent !important;
+}
+
+.dark option {
+  background: #1a1a2e !important;
+  color: #f1f3f5 !important;
+}
+
+.dark .dropdown-menu,
+.dark .select-options {
+  background: #1a1a2e !important;
+  border-color: #2d2d44 !important;
+}
+
+.dark .pagination {
+  background: #1a1a2e !important;
+  border-color: #2d2d44 !important;
+}
+
+.dark .pagination button {
+  background: #1a1a2e !important;
+  color: #e5e7eb !important;
+  border-color: #2d2d44 !important;
+}
+
+.dark .pagination button:hover {
+  background: #2d2d44 !important;
+}
+
+.dark .modal-content {
+  background: #1a1a2e !important;
+  border-color: #2d2d44 !important;
+}
+
+.dark .toast {
+  background: #1a1a2e !important;
+  color: #f1f3f5 !important;
+}
+
+.dark .badge {
+  border-color: #2d2d44 !important;
 }
